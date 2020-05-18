@@ -12,9 +12,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.w3c.dom.Text;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.TreatmentViewHolder> {
@@ -23,6 +28,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         public TextView typeTextView;
         public TextView lastDateView;
         public TextView nextDateView;
+        public TextView daysUntilView;
 
         public TreatmentViewHolder(View view) {
             super(view);
@@ -30,6 +36,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             this.typeTextView = view.findViewById(R.id.treatment_type);
             this.lastDateView = view.findViewById(R.id.last_date);
             this.nextDateView = view.findViewById(R.id.next_date);
+            this.daysUntilView = view.findViewById(R.id.days_until);
 
 
             this.containerView.setOnClickListener(new View.OnClickListener() {
@@ -63,8 +70,14 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         holder.containerView.setTag(current);
         holder.typeTextView.setText(current.type);
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        holder.lastDateView.setText(formatter.format(current.lastDate));
-        holder.nextDateView.setText(formatter.format(current.nextDate));
+        holder.nextDateView.setText("Próxima aplicação: " + formatter.format(current.nextDate));
+        holder.lastDateView.setText("Última aplicação: " + formatter.format(current.lastDate));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            LocalDate now = LocalDate.now();
+            LocalDate nextDate = current.nextDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            holder.daysUntilView.setText("Em " + now.until(nextDate, ChronoUnit.DAYS) + " dias");
+        }
+
     }
 
     @Override
