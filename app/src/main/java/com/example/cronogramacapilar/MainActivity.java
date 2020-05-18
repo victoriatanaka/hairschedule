@@ -8,6 +8,9 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.Room;
 
 import android.view.View;
 import android.view.Menu;
@@ -15,6 +18,9 @@ import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
     public static TreatmentsDatabase database;
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private static TreatmentsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +28,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        database = Room
+                .databaseBuilder(getApplicationContext(), TreatmentsDatabase.class, "treatments")
+                .allowMainThreadQueries()
+                .build();
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -31,6 +42,26 @@ public class MainActivity extends AppCompatActivity {
                 view.getContext().startActivity(intent);
             }
         });
+
+        //database.treatmentDao().deleteAll();
+        recyclerView = findViewById(R.id.recycler_view);
+        layoutManager = new LinearLayoutManager(this);
+        adapter = new TreatmentsAdapter();
+
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        reload();
+    }
+
+    public static void reload() {
+        adapter.reload();
     }
 
     @Override

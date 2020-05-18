@@ -22,4 +22,7 @@ public interface TreatmentDao {
 
     @Query("SELECT * FROM treatments WHERE id = :id")
     Treatment get(long id);
+
+    @Query("DELETE FROM treatments")
+    void deleteAll();
 }

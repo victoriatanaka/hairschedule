@@ -16,8 +16,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.cronogramacapilar.MainActivity;
-import com.example.cronogramacapilar.NewTreatment;
 import com.example.cronogramacapilar.R;
 
 import java.text.SimpleDateFormat;
@@ -182,6 +180,4 @@ public class TreatmentHelper {
                 Log.e("updateUnitOfRepeatsVal", "Invalid value for unit of repeats: " + previous);
         }
     }
-
-
 }
