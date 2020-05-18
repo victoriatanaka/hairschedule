@@ -72,10 +72,21 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
         holder.nextDateView.setText("Próxima aplicação: " + formatter.format(current.nextDate));
         holder.lastDateView.setText("Última aplicação: " + formatter.format(current.lastDate));
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate now = LocalDate.now();
             LocalDate nextDate = current.nextDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            holder.daysUntilView.setText("Em " + now.until(nextDate, ChronoUnit.DAYS) + " dias");
+            long daysUntil = now.until(nextDate, ChronoUnit.DAYS);
+            if (daysUntil > 1)
+                holder.daysUntilView.setText("Em " + daysUntil + " dias");
+            else if (daysUntil == 1)
+                holder.daysUntilView.setText("Em 1 dia");
+            else if (daysUntil == 0)
+                holder.daysUntilView.setText("Hoje!");
+            else if (daysUntil == -1)
+                holder.daysUntilView.setText("1 dia atrasado");
+            else
+                holder.daysUntilView.setText(-daysUntil + " dias atrasado");
         }
 
     }
