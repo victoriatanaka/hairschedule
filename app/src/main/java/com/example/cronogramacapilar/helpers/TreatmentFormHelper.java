@@ -1,4 +1,4 @@
-package com.example.cronogramacapilar.formhelpers;
+package com.example.cronogramacapilar.helpers;
 
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.graphics.Color;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,19 +21,20 @@ import android.widget.Toast;
 import com.example.cronogramacapilar.R;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class TreatmentHelper {
+public final class TreatmentFormHelper {
     private Context context;
 
-    public TreatmentHelper(Context context) {
+    public TreatmentFormHelper(Context context) {
         this.context = context;
     }
 
-    public void setSpinnerValues(Spinner treatment) {
+    public void setSpinnerValues(Spinner treatmentSpinner) {
 
         // Get reference of widgets from XML layout
 
@@ -67,9 +70,9 @@ public class TreatmentHelper {
             }
         };
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item);
-        treatment.setAdapter(spinnerArrayAdapter);
+        treatmentSpinner.setAdapter(spinnerArrayAdapter);
 
-        treatment.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        treatmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selectedItemText = (String) parent.getItemAtPosition(position);
@@ -88,6 +91,45 @@ public class TreatmentHelper {
 
             }
         });
+    }
+
+    public void setSpinnerLocked(Spinner treatmentSpinner, String treatmentType) {
+
+        List<String> treatmentsArrayList = Arrays.asList(treatmentType);
+
+        // Initializing an ArrayAdapter
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+                context, R.layout.spinner_item_disabled, treatmentsArrayList);
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item_disabled);
+
+        treatmentSpinner.setAdapter(spinnerArrayAdapter);
+        treatmentSpinner.setEnabled(false);
+
+        treatmentSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    showTipSpinnerLocked();
+                }
+                return true;
+            }
+        });
+        treatmentSpinner.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (keyCode == KeyEvent.KEYCODE_DPAD_CENTER) {
+                    showTipSpinnerLocked();
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        });
+    }
+
+    private void showTipSpinnerLocked() {
+        Toast.makeText(context, "Não é possível editar este campo.",
+                Toast.LENGTH_LONG).show();
     }
 
     public void setCalendars(final EditText lastDate) {

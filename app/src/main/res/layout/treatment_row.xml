@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -46,6 +47,7 @@
                 style="@style/Widget.AppCompat.Button.Borderless.Colored"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:id="@+id/see_details_button"
                 android:text="Ver detalhes" />
 
             <RelativeLayout
@@ -57,7 +59,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentRight="true"
                     android:drawableEnd="@drawable/ic_check_black_24dp"
-                    android:text="Marcar como feito" />
+                    android:text="@string/mark_as_done" />
             </RelativeLayout>
 
             <TextView
@@ -72,8 +74,10 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="right|top"
+            android:id="@+id/edit_button"
             android:background="?selectableItemBackgroundBorderless"
             android:src="@drawable/ic_edit_black_24dp"
-            android:tint="@color/cardview_dark_background" />
+            android:tint="@color/cardview_dark_background"
+            tools:ignore="PrivateResource" />
     </FrameLayout>
 </androidx.cardview.widget.CardView>

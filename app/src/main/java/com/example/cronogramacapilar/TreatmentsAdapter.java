@@ -5,21 +5,22 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.w3c.dom.Text;
+import com.example.cronogramacapilar.activities.EditTreatmentActivity;
+import com.example.cronogramacapilar.activities.MainActivity;
+import com.example.cronogramacapilar.activities.TreatmentActivity;
 
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.TreatmentViewHolder> {
@@ -29,6 +30,8 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         public TextView lastDateView;
         public TextView nextDateView;
         public TextView daysUntilView;
+        public Button seeDetailsButton;
+        public ImageButton editButton;
 
         public TreatmentViewHolder(View view) {
             super(view);
@@ -37,18 +40,27 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             this.lastDateView = view.findViewById(R.id.last_date);
             this.nextDateView = view.findViewById(R.id.next_date);
             this.daysUntilView = view.findViewById(R.id.days_until);
+            this.seeDetailsButton = view.findViewById(R.id.see_details_button);
+            this.editButton = view.findViewById(R.id.edit_button);
+            this.seeDetailsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, TreatmentActivity.class);
+                    intent.putExtra("id", (long) containerView.getTag());
+                    context.startActivity(intent);
+                }
+            });
 
-
-            this.containerView.setOnClickListener(new View.OnClickListener() {
+            this.editButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Treatment treatment = (Treatment) containerView.getTag();
-                    //Intent intent = new Intent(v.getContext(), TreatmentActivity.class);
-                    //intent.putExtra("id", note.id);
-                    //intent.putExtra("content", note.content);
-
-                    //context.startActivity(intent);
+                    Intent intent = new Intent(context, EditTreatmentActivity.class);
+                    intent.putExtra("id", treatment.id);
+                    intent.putExtra("type", treatment.type);
+                    context.startActivity(intent);
                 }
             });
         }

@@ -1,10 +1,14 @@
-package com.example.cronogramacapilar;
+package com.example.cronogramacapilar.activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.cronogramacapilar.R;
+import com.example.cronogramacapilar.Treatment;
+import com.example.cronogramacapilar.TreatmentsAdapter;
+import com.example.cronogramacapilar.TreatmentsDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -38,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), NewTreatment.class);
+                Intent intent = new Intent(view.getContext(), NewTreatmentActivity.class);
                 view.getContext().startActivity(intent);
             }
         });
@@ -84,5 +88,10 @@ public class MainActivity extends AppCompatActivity {
         //}
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void launchTreatmentActivity(View view) {
+
+
     }
 }
