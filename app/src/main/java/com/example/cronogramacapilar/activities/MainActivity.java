@@ -1,11 +1,9 @@
 package com.example.cronogramacapilar.activities;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.cronogramacapilar.R;
-import com.example.cronogramacapilar.Treatment;
 import com.example.cronogramacapilar.TreatmentsAdapter;
 import com.example.cronogramacapilar.TreatmentsDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -50,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         //database.treatmentDao().deleteAll();
         recyclerView = findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);
-        adapter = new TreatmentsAdapter();
+        adapter = new TreatmentsAdapter(this);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
@@ -88,10 +86,5 @@ public class MainActivity extends AppCompatActivity {
         //}
 
         return super.onOptionsItemSelected(item);
-    }
-
-    public void launchTreatmentActivity(View view) {
-
-
     }
 }

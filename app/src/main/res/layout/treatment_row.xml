@@ -57,7 +57,7 @@
                 <Button
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:drawableEnd="@drawable/ic_check_black_24dp"
                     android:text="@string/mark_as_done" />
             </RelativeLayout>
@@ -66,18 +66,18 @@
                 android:id="@+id/last_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="bottom|right"
+                android:gravity="bottom|end"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
         </LinearLayout>
-
         <ImageButton
-            android:layout_width="30dp"
+            android:id="@+id/menu_button"
+            android:layout_width="20dp"
             android:layout_height="30dp"
-            android:layout_gravity="right|top"
-            android:id="@+id/edit_button"
+            android:src="@drawable/ic_more_vert_black_24dp"
             android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_edit_black_24dp"
             android:tint="@color/cardview_dark_background"
-            tools:ignore="PrivateResource" />
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"
+            android:layout_gravity="end|top" />
     </FrameLayout>
 </androidx.cardview.widget.CardView>

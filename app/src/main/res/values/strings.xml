@@ -13,9 +13,9 @@
     <string name="last_date">Data da última aplicação</string>
     <string name="observations">Observações</string>
     <string name="mark_as_done">Marcar como feito</string>
-    <string name="edit">Editar tratamento</string>
-    <string name="delete">Deletar tratamento</string>
-    <string name="save">Salvar tratamento</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Deletar</string>
+    <string name="save">Salvar</string>
     <string name="cancel">Cancelar</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
