@@ -47,7 +47,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, TreatmentActivity.class);
-                    intent.putExtra("id", (long) containerView.getTag());
+                    intent.putExtra("id", ((Treatment) containerView.getTag()).id);
                     context.startActivity(intent);
                 }
             });
@@ -56,10 +56,8 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Treatment treatment = (Treatment) containerView.getTag();
                     Intent intent = new Intent(context, EditTreatmentActivity.class);
-                    intent.putExtra("id", treatment.id);
-                    intent.putExtra("type", treatment.type);
+                    intent.putExtra("id", ((Treatment) containerView.getTag()).id);
                     context.startActivity(intent);
                 }
             });

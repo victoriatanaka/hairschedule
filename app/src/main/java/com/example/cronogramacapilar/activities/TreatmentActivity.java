@@ -1,12 +1,9 @@
 package com.example.cronogramacapilar.activities;
 
-import androidx.annotation.ColorRes;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.arch.core.util.Function;
 
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,8 +13,11 @@ import android.widget.TextView;
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.Treatment;
 import com.example.cronogramacapilar.helpers.MenuHelper;
+import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 
 import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.concurrent.Callable;
 
 
 public class TreatmentActivity extends AppCompatActivity {
@@ -39,14 +39,24 @@ public class TreatmentActivity extends AppCompatActivity {
         frequencyView = findViewById(R.id.frequency);
         observationsView = findViewById(R.id.observations);
         long id = intent.getLongExtra("id", 0);
-        treatment = MainActivity.database.treatmentDao().get(id);
+        new TreatmentDaoAsync().new GetTreatmentAsync(
+                new Function<Treatment, Void>() {
+                    @Override
+                    public Void apply(Treatment treatment) {
+                        return getTreatmentCallback(treatment);
+                    }
+                }).execute(id);
+    }
 
+    private Void getTreatmentCallback(Treatment treatment) {
+        this.treatment = treatment;
         typeView.setText(treatment.type);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
         lastDateView.setText("Última aplicação: " + formatter.format(treatment.lastDate));
         nextDateView.setText("Próxima aplicação: " + formatter.format(treatment.nextDate));
         frequencyView.setText("Repete a cada " + treatment.repeats + " " + treatment.repeatsUnit);
         observationsView.setText("Observações:\n" + treatment.observations);
+        return null;
     }
 
     @Override
@@ -63,26 +73,20 @@ public class TreatmentActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.delete:
-                new DeleteTreatment().execute(treatment.id);
+                new TreatmentDaoAsync().new DeleteTreatmentAsync(
+                        new Callable<Void>() {
+                            public Void call() {
+                                finish();
+                                MainActivity.reload();
+                                return null;
+                            }
+                        }).execute(treatment.id);
                 return true;
             case R.id.edit:
 
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }
-    }
-
-    private class DeleteTreatment extends AsyncTask<Long, Void, Void> {
-        @Override
-        protected Void doInBackground(Long... longs) {
-            MainActivity.database.treatmentDao().delete(longs[0]);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            finish();
         }
     }
 }

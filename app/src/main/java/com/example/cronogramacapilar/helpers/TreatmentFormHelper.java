@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -103,7 +104,6 @@ public final class TreatmentFormHelper {
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item_disabled);
 
         treatmentSpinner.setAdapter(spinnerArrayAdapter);
-        treatmentSpinner.setEnabled(false);
 
         treatmentSpinner.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -132,7 +132,7 @@ public final class TreatmentFormHelper {
                 Toast.LENGTH_LONG).show();
     }
 
-    public void setCalendars(final EditText lastDate) {
+    public Calendar setCalendars(final EditText lastDate) {
         final Calendar myCalendar = Calendar.getInstance();
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -157,6 +157,14 @@ public final class TreatmentFormHelper {
                         myCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
+
+        return myCalendar;
+    }
+
+    public void setCalendars(final EditText lastDate, Date initialDate) {
+        Calendar myCalendar = setCalendars(lastDate);
+        myCalendar.setTime(initialDate);
+        updateLabel(myCalendar, lastDate);
     }
 
     private void updateLabel(Calendar myCalendar, EditText lastDate) {
@@ -204,7 +212,7 @@ public final class TreatmentFormHelper {
         });
     }
 
-    private void updateUnitOfRepeatsValue(String previous, Spinner unitOfRepeats) {
+    public void updateUnitOfRepeatsValue(String previous, Spinner unitOfRepeats) {
         switch (previous.charAt(0)) {
             case 'd':
                 unitOfRepeats.setSelection(0);

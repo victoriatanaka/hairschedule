@@ -14,12 +14,14 @@ import android.widget.TextView;
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.Treatment;
 import com.example.cronogramacapilar.helpers.MenuHelper;
+import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 import com.example.cronogramacapilar.helpers.TreatmentFormHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.Callable;
 
 public class NewTreatmentActivity extends AppCompatActivity {
     private EditText lastDateField;
@@ -111,24 +113,17 @@ public class NewTreatmentActivity extends AppCompatActivity {
 
         if (canSave) {
             observations = ((EditText) findViewById(R.id.observations)).getText().toString();
-            new CreateTreatment().execute();
+            new TreatmentDaoAsync().new CreateTreatmentAsync(
+                    new Callable<Void>() {
+                        public Void call() {
+                            finish();
+                            MainActivity.reload();
+                            return null;
+                        }
+                    }, treatmentType, lastDate, nextDate, repeatsUnit, repeats, observations).execute();
         }
 
         // Toast.makeText(view.getContext(), nextDate.toString(), Toast.LENGTH_LONG).show();
 
-    }
-
-    private class CreateTreatment extends AsyncTask<Void, Void, Void> {
-        @Override
-        protected Void doInBackground(Void... voids) {
-            MainActivity.database.treatmentDao().create(treatmentType, lastDate, nextDate, repeats, repeatsUnit, observations);
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            NewTreatmentActivity.this.finish();
-            MainActivity.reload();
-        }
     }
 }
