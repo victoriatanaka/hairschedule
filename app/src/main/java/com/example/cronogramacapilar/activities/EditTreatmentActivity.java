@@ -131,7 +131,6 @@ public class EditTreatmentActivity extends AppCompatActivity {
                     new Callable<Void>() {
                         public Void call() {
                             finish();
-                            MainActivity.reload();
                             return null;
                         }
                     }, treatment).execute();

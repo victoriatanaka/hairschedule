@@ -3,7 +3,6 @@ package com.example.cronogramacapilar.activities;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -117,13 +116,11 @@ public class NewTreatmentActivity extends AppCompatActivity {
                     new Callable<Void>() {
                         public Void call() {
                             finish();
-                            MainActivity.reload();
                             return null;
                         }
                     }, treatmentType, lastDate, nextDate, repeatsUnit, repeats, observations).execute();
         }
 
         // Toast.makeText(view.getContext(), nextDate.toString(), Toast.LENGTH_LONG).show();
-
     }
 }

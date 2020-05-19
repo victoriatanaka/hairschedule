@@ -59,10 +59,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        reload();
-    }
-
-    public static void reload() {
         adapter.reload();
     }
 

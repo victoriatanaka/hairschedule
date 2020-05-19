@@ -77,16 +77,32 @@ public class TreatmentActivity extends AppCompatActivity {
                         new Callable<Void>() {
                             public Void call() {
                                 finish();
-                                MainActivity.reload();
                                 return null;
                             }
                         }).execute(treatment.id);
                 return true;
             case R.id.edit:
+                Intent intent = new Intent(this, EditTreatmentActivity.class);
+                intent.putExtra("id", treatment.id);
+                this.startActivity(intent);
 
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (treatment != null) {
+            new TreatmentDaoAsync().new GetTreatmentAsync(
+                    new Function<Treatment, Void>() {
+                        @Override
+                        public Void apply(Treatment treatment) {
+                            return getTreatmentCallback(treatment);
+                        }
+                    }).execute(treatment.id);
         }
     }
 }
