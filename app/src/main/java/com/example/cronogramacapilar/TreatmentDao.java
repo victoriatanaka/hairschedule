@@ -11,7 +11,7 @@ public interface TreatmentDao {
     @Query("INSERT INTO treatments (type, last_date, next_date, repeats, repeats_unit, observations) VALUES (:type, :lastDate, :nextDate, :repeats, :repeatsUnit, :observations)")
     long create(String type, Date lastDate, Date nextDate, int repeats, String repeatsUnit, String observations);
 
-    @Query("SELECT * FROM treatments")
+    @Query("SELECT * FROM treatments ORDER BY next_date, type")
     List<Treatment> getAll();
 
     @Query("UPDATE treatments SET last_date = :lastDate, next_date = :nextDate, repeats = :repeats, repeats_unit = :repeatsUnit, observations = :observations WHERE id = :id")

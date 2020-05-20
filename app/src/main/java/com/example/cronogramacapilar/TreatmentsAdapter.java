@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,6 +29,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -143,7 +146,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                     new TreatmentDaoAsync().new SaveTreatmentAsync(
                             new Callable<Void>() {
                                 public Void call() {
-                                    notifyItemChanged(position);
+                                    reload();
                                     createSnackbar();
                                     return null;
                                 }
@@ -189,6 +192,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                         intent.putExtra("id", current.id);
                         context.startActivity(intent);
                         return true;
+
                     case R.id.delete_button:
                         current = treatments.remove(position);
                         new TreatmentDaoAsync().new DeleteTreatmentAsync(
@@ -200,6 +204,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                                     }
                                 }).execute(current.id);
                         return true;
+
                     default:
                 }
                 return false;

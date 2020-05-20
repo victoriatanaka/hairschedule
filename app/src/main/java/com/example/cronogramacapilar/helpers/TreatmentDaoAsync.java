@@ -9,6 +9,7 @@ import com.example.cronogramacapilar.activities.EditTreatmentActivity;
 import com.example.cronogramacapilar.activities.MainActivity;
 import com.example.cronogramacapilar.activities.NewTreatmentActivity;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Callable;
 
@@ -48,7 +49,7 @@ public final class TreatmentDaoAsync {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            MainActivity.database.treatmentDao().save(treatment.lastDate, treatment.nextDate, treatment.repeats, treatment.repeatsUnit, treatment.observations, treatment.id);
+            MainActivity.database.treatmentDao().save(setTimeToZero(treatment.lastDate), setTimeToZero(treatment.nextDate), treatment.repeats, treatment.repeatsUnit, treatment.observations, treatment.id);
             return null;
         }
 
@@ -102,7 +103,7 @@ public final class TreatmentDaoAsync {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            MainActivity.database.treatmentDao().create(type, lastDate, nextDate, repeats, repeatsUnit, observations);
+            MainActivity.database.treatmentDao().create(type, setTimeToZero(lastDate), setTimeToZero(nextDate), repeats, repeatsUnit, observations);
             return null;
         }
 
@@ -114,6 +115,16 @@ public final class TreatmentDaoAsync {
                 e.printStackTrace();
             }
         }
+    }
+
+    private Date setTimeToZero(Date date) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.set(Calendar.HOUR_OF_DAY, 0);
+        cal.set(Calendar.MINUTE, 0);
+        cal.set(Calendar.SECOND, 0);
+        cal.set(Calendar.MILLISECOND, 0);
+        return cal.getTime();
     }
 
 }
