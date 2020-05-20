@@ -10,7 +10,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 @Entity(tableName = "treatments")
-public class Treatment {
+public class Treatment implements Cloneable {
     @PrimaryKey
     public long id;
 
@@ -32,6 +32,9 @@ public class Treatment {
     @ColumnInfo(name = "observations")
     public String observations;
 
+    public Object clone() throws CloneNotSupportedException {
+        return super.clone();
+    }
     public static Date calculateNextDate(Date lastDate, int numberOfRepeats, String unitOfRepeats) {
         Calendar c = Calendar.getInstance();
         c.setTime(lastDate);

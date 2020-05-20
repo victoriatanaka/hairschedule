@@ -141,13 +141,20 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                 @Override
                 public void onClick(final View v) {
                     final Treatment current = treatments.get(position);
+                    Treatment previous = null;
+                    try {
+                        previous = (Treatment) current.clone();
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
                     current.lastDate = new Date();
                     current.nextDate = Treatment.calculateNextDate(current.lastDate, current.repeats, current.repeatsUnit);
+                    final Treatment finalPrevious = previous;
                     new TreatmentDaoAsync().new SaveTreatmentAsync(
                             new Callable<Void>() {
                                 public Void call() {
                                     reload();
-                                    createSnackbar();
+                                    createSnackbar(finalPrevious);
                                     return null;
                                 }
                             }, current).execute();
@@ -156,13 +163,20 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         }
     }
 
-    private void createSnackbar() {
+    private void createSnackbar(final Treatment previous) {
         final Snackbar snackbar = Snackbar
                 .make(((Activity) context).findViewById(R.id.coordinator_layout), "Tratamento marcado como feito.", Snackbar.LENGTH_INDEFINITE);
         snackbar.setAction("Desfazer", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                Log.d("teste", previous.lastDate.toString());
+                new TreatmentDaoAsync().new SaveTreatmentAsync(
+                        new Callable<Void>() {
+                            public Void call() {
+                                reload();
+                                return null;
+                            }
+                        }, previous).execute();
             }
         });
 
@@ -170,6 +184,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         snackbar.getView().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 snackbar.dismiss();
             }
         });
