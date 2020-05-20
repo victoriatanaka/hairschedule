@@ -44,8 +44,10 @@ public class Treatment {
                 break;
             case 'm':
                 c.add(Calendar.MONTH, numberOfRepeats);
+                break;
             case 'a':
                 c.add(Calendar.YEAR, numberOfRepeats);
+                break;
             default:
                 Log.e("updateUnitOfRepeatsVal", "Invalid value for unit of repeats: " + unitOfRepeats);
         }

@@ -17,6 +17,13 @@
     <string name="delete">Deletar</string>
     <string name="save">Salvar</string>
     <string name="cancel">Cancelar</string>
+    <string name="next_application">Próxima aplicação: %1$s</string>
+    <string name="last_application">Última aplicação: %1$s</string>
+    <string name="in_n_days">Em %1$d dias</string>
+    <string name="in_one_day">Em 1 dia</string>
+    <string name="today">Hoje!</string>
+    <string name="one_day_late">1 dia atrasado</string>
+    <string name="n_days_late">%1$d dias atrasado</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Reconstrução</item>

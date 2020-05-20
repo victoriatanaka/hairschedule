@@ -1,12 +1,14 @@
 package com.example.cronogramacapilar.activities;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.TreatmentsAdapter;
 import com.example.cronogramacapilar.TreatmentsDatabase;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -14,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     private static TreatmentsAdapter adapter;
+    private Snackbar snackbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +62,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-
         adapter.reload();
+        dismissSnackbar();
+    }
+
+    private void dismissSnackbar() {
+        if (snackbar != null && snackbar.isShown()) {
+            snackbar.dismiss();
+            snackbar = null;
+        }
     }
 
     @Override
@@ -82,5 +93,9 @@ public class MainActivity extends AppCompatActivity {
         //}
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void setSnackbar(Snackbar snackbar) {
+        this.snackbar = snackbar;
     }
 }

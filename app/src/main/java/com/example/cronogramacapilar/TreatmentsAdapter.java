@@ -1,7 +1,9 @@
 package com.example.cronogramacapilar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,13 +21,16 @@ import com.example.cronogramacapilar.activities.EditTreatmentActivity;
 import com.example.cronogramacapilar.activities.MainActivity;
 import com.example.cronogramacapilar.activities.TreatmentActivity;
 import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.TreatmentViewHolder> {
@@ -36,9 +41,10 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         public TextView nextDateView;
         public TextView daysUntilView;
         public Button seeDetailsButton;
+        public Button markAsCompleteButton;
         public ImageButton menuButton;
 
-        public TreatmentViewHolder(View view) {
+        public TreatmentViewHolder(final View view) {
             super(view);
             this.containerView = view.findViewById(R.id.card_view);
             this.typeTextView = view.findViewById(R.id.treatment_type);
@@ -46,22 +52,15 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             this.nextDateView = view.findViewById(R.id.next_date);
             this.daysUntilView = view.findViewById(R.id.days_until);
             this.seeDetailsButton = view.findViewById(R.id.see_details_button);
+            this.markAsCompleteButton = view.findViewById(R.id.mark_as_complete_button);
             this.menuButton = view.findViewById(R.id.menu_button);
-            this.seeDetailsButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, TreatmentActivity.class);
-                    intent.putExtra("id", ((Treatment) containerView.getTag()).id);
-                    context.startActivity(intent);
-                }
-            });
         }
     }
 
     private List<Treatment> treatments = new ArrayList<>();
     private Context context;
 
+    // Constructor receives the Activity's context
     public TreatmentsAdapter(Context context) {
         this.context = context;
     }
@@ -76,35 +75,103 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
 
     @Override
     public void onBindViewHolder(final TreatmentViewHolder holder, final int position) {
-        Treatment current = treatments.get(position);
-        holder.containerView.setTag(current);
-        holder.typeTextView.setText(current.type);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-        holder.nextDateView.setText("Próxima aplicação: " + formatter.format(current.nextDate));
-        holder.lastDateView.setText("Última aplicação: " + formatter.format(current.lastDate));
+        final Treatment current = treatments.get(position);
 
+        // setup type 
+        holder.typeTextView.setText(current.type);
+
+        // setup dates
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        holder.nextDateView.setText(context.getString(R.string.next_application, formatter.format(current.nextDate)));
+        holder.lastDateView.setText(context.getString(R.string.last_application, formatter.format(current.lastDate)));
+
+        // setup days until + button to mark as complete
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             LocalDate now = LocalDate.now();
             LocalDate nextDate = current.nextDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate lastDate = current.lastDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
             long daysUntil = now.until(nextDate, ChronoUnit.DAYS);
-            if (daysUntil > 1)
-                holder.daysUntilView.setText("Em " + daysUntil + " dias");
-            else if (daysUntil == 1)
-                holder.daysUntilView.setText("Em 1 dia");
-            else if (daysUntil == 0)
-                holder.daysUntilView.setText("Hoje!");
-            else if (daysUntil == -1)
-                holder.daysUntilView.setText("1 dia atrasado");
-            else
-                holder.daysUntilView.setText(-daysUntil + " dias atrasado");
+            long daysSince = now.until(lastDate, ChronoUnit.DAYS);
+
+            setupMarkAsCompleteButton(holder, daysSince, position);
+            setupDaysUntil(holder, daysUntil);
         }
 
+        // setup menu button
         holder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 showPopupMenu(holder.menuButton, position, holder);
             }
         });
+
+        holder.seeDetailsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, TreatmentActivity.class);
+                intent.putExtra("id", current.id);
+                context.startActivity(intent);
+            }
+        });
+    }
+
+    private void setupDaysUntil(TreatmentViewHolder holder, long daysUntil) {
+        if (daysUntil > 1)
+            holder.daysUntilView.setText(context.getString(R.string.in_n_days, daysUntil));
+        else if (daysUntil == 1)
+            holder.daysUntilView.setText(R.string.in_one_day);
+        else if (daysUntil == 0)
+            holder.daysUntilView.setText(R.string.today);
+        else if (daysUntil == -1)
+            holder.daysUntilView.setText(R.string.one_day_late);
+        else
+            holder.daysUntilView.setText(context.getString(R.string.n_days_late, -daysUntil));
+    }
+
+    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, final int position) {
+        if (daysSince == 0)
+            holder.markAsCompleteButton.setVisibility(View.GONE);
+        else {
+            holder.markAsCompleteButton.setVisibility(View.VISIBLE);
+            holder.markAsCompleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(final View v) {
+                    final Treatment current = treatments.get(position);
+                    current.lastDate = new Date();
+                    current.nextDate = Treatment.calculateNextDate(current.lastDate, current.repeats, current.repeatsUnit);
+                    new TreatmentDaoAsync().new SaveTreatmentAsync(
+                            new Callable<Void>() {
+                                public Void call() {
+                                    notifyItemChanged(position);
+                                    createSnackbar();
+                                    return null;
+                                }
+                            }, current).execute();
+                }
+            });
+        }
+    }
+
+    private void createSnackbar() {
+        final Snackbar snackbar = Snackbar
+                .make(((Activity) context).findViewById(R.id.coordinator_layout), "Tratamento marcado como feito.", Snackbar.LENGTH_INDEFINITE);
+        snackbar.setAction("Desfazer", new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //TODO
+            }
+        });
+
+        snackbar.setActionTextColor(Color.YELLOW);
+        snackbar.getView().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                snackbar.dismiss();
+            }
+        });
+        snackbar.show();
+        ((MainActivity) context).setSnackbar(snackbar);
     }
 
     private void showPopupMenu(View view, final int position, final TreatmentViewHolder holder) {
@@ -117,20 +184,21 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             public boolean onMenuItemClick(MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.edit_button:
+                        Treatment current = treatments.get(position);
                         Intent intent = new Intent(context, EditTreatmentActivity.class);
-                        intent.putExtra("id", ((Treatment) holder.containerView.getTag()).id);
+                        intent.putExtra("id", current.id);
                         context.startActivity(intent);
                         return true;
                     case R.id.delete_button:
+                        current = treatments.remove(position);
                         new TreatmentDaoAsync().new DeleteTreatmentAsync(
                                 new Callable<Void>() {
                                     public Void call() {
-                                        treatments.remove(position);
                                         notifyItemRemoved(position);
                                         notifyItemRangeChanged(position, treatments.size());
                                         return null;
                                     }
-                                }).execute(((Treatment) holder.containerView.getTag()).id);
+                                }).execute(current.id);
                         return true;
                     default:
                 }
