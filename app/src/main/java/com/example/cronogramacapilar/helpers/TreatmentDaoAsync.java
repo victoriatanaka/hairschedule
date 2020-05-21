@@ -1,14 +1,11 @@
 package com.example.cronogramacapilar.helpers;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.arch.core.util.Function;
 
 import com.example.cronogramacapilar.Treatment;
-import com.example.cronogramacapilar.activities.EditTreatmentActivity;
 import com.example.cronogramacapilar.activities.MainActivity;
-import com.example.cronogramacapilar.activities.NewTreatmentActivity;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -16,8 +13,8 @@ import java.util.concurrent.Callable;
 
 public final class TreatmentDaoAsync {
 
-    public class DeleteTreatmentAsync extends AsyncTask<Long, Void, Void> {
-        private Callable<Void> callback;
+    public static class DeleteTreatmentAsync extends AsyncTask<Long, Void, Void> {
+        private final Callable<Void> callback;
 
         public DeleteTreatmentAsync(Callable<Void> callback) {
             this.callback = callback;
@@ -39,9 +36,9 @@ public final class TreatmentDaoAsync {
         }
     }
 
-    public class SaveTreatmentAsync extends AsyncTask<Void, Void, Void> {
-        private Callable<Void> callback;
-        private Treatment treatment;
+    public static class SaveTreatmentAsync extends AsyncTask<Void, Void, Void> {
+        private final Callable<Void> callback;
+        private final Treatment treatment;
 
         public SaveTreatmentAsync(Callable<Void> callback, Treatment treatment) {
             this.callback = callback;
@@ -64,8 +61,8 @@ public final class TreatmentDaoAsync {
         }
     }
 
-    public class GetTreatmentAsync extends AsyncTask<Long, Void, Treatment> {
-        private Function<Treatment, Void> callback;
+    public static class GetTreatmentAsync extends AsyncTask<Long, Void, Treatment> {
+        private final Function<Treatment, Void> callback;
 
         public GetTreatmentAsync(Function<Treatment, Void> callback) {
             this.callback = callback;
@@ -82,14 +79,14 @@ public final class TreatmentDaoAsync {
         }
     }
 
-    public class CreateTreatmentAsync extends AsyncTask<Void, Void, Void> {
-        private Callable<Void> callback;
-        private String type;
-        private Date lastDate;
-        private Date nextDate;
-        private String repeatsUnit;
-        private int repeats;
-        private String observations;
+    public static class CreateTreatmentAsync extends AsyncTask<Void, Void, Void> {
+        private final Callable<Void> callback;
+        private final String type;
+        private final Date lastDate;
+        private final Date nextDate;
+        private final String repeatsUnit;
+        private final int repeats;
+        private final String observations;
 
 
         public CreateTreatmentAsync(Callable<Void> callback, String type, Date lastDate, Date nextDate, String repeatsUnit, int repeats, String observations) {
@@ -118,7 +115,7 @@ public final class TreatmentDaoAsync {
         }
     }
 
-    private Date setTimeToZero(Date date) {
+    private static Date setTimeToZero(Date date) {
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
         cal.set(Calendar.HOUR_OF_DAY, 0);

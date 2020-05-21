@@ -15,8 +15,8 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
-import androidx.cardview.widget.CardView;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -31,8 +31,6 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -40,18 +38,16 @@ import java.util.concurrent.Callable;
 
 public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.TreatmentViewHolder> {
     public static class TreatmentViewHolder extends RecyclerView.ViewHolder {
-        public CardView containerView;
-        public TextView typeTextView;
-        public TextView lastDateView;
-        public TextView nextDateView;
-        public TextView daysUntilView;
-        public Button seeDetailsButton;
-        public Button markAsCompleteButton;
-        public ImageButton menuButton;
+        final TextView typeTextView;
+        final TextView lastDateView;
+        final TextView nextDateView;
+        final TextView daysUntilView;
+        final Button seeDetailsButton;
+        final Button markAsCompleteButton;
+        final ImageButton menuButton;
 
-        public TreatmentViewHolder(final View view) {
+        TreatmentViewHolder(final View view) {
             super(view);
-            this.containerView = view.findViewById(R.id.card_view);
             this.typeTextView = view.findViewById(R.id.treatment_type);
             this.lastDateView = view.findViewById(R.id.last_date);
             this.nextDateView = view.findViewById(R.id.next_date);
@@ -63,7 +59,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
     }
 
     private List<Treatment> treatments = new ArrayList<>();
-    private Context context;
+    private final Context context;
 
     // Constructor receives the Activity's context
     public TreatmentsAdapter(Context context) {
@@ -71,6 +67,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
     }
 
     @Override
+    @NonNull
     public TreatmentViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.treatment_row, parent, false);
@@ -86,7 +83,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         holder.typeTextView.setText(current.type);
 
         // setup dates
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         holder.nextDateView.setText(context.getString(R.string.next_application, formatter.format(current.nextDate)));
         holder.lastDateView.setText(context.getString(R.string.last_application, formatter.format(current.lastDate)));
 
@@ -107,7 +104,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         holder.menuButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showPopupMenu(holder.menuButton, position, holder);
+                showPopupMenu(holder.menuButton, position);
             }
         });
 
@@ -122,16 +119,12 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
     }
 
     private void setupDaysUntil(TreatmentViewHolder holder, long daysUntil) {
-        if (daysUntil > 1)
-            holder.daysUntilView.setText(context.getString(R.string.in_n_days, daysUntil));
-        else if (daysUntil == 1)
-            holder.daysUntilView.setText(R.string.in_one_day);
+        if (daysUntil >= 1)
+            holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.in_n_days, (int) daysUntil, daysUntil));
         else if (daysUntil == 0)
             holder.daysUntilView.setText(R.string.today);
-        else if (daysUntil == -1)
-            holder.daysUntilView.setText(R.string.one_day_late);
         else
-            holder.daysUntilView.setText(context.getString(R.string.n_days_late, -daysUntil));
+            holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.n_days_late, (int) -daysUntil, -daysUntil));
     }
 
     private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, final int position) {
@@ -158,7 +151,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                     current.lastDate = new Date();
                     current.nextDate = Treatment.calculateNextDate(current.lastDate, current.repeats, current.repeatsUnit);
                     final Treatment finalPrevious = previous;
-                    new TreatmentDaoAsync().new SaveTreatmentAsync(
+                    new TreatmentDaoAsync.SaveTreatmentAsync(
                             new Callable<Void>() {
                                 public Void call() {
                                     reload();
@@ -178,7 +171,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             @Override
             public void onClick(View view) {
                 Log.d("teste", previous.lastDate.toString());
-                new TreatmentDaoAsync().new SaveTreatmentAsync(
+                new TreatmentDaoAsync.SaveTreatmentAsync(
                         new Callable<Void>() {
                             public Void call() {
                                 reload();
@@ -200,7 +193,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         ((MainActivity) context).setSnackbar(snackbar);
     }
 
-    private void showPopupMenu(View view, final int position, final TreatmentViewHolder holder) {
+    private void showPopupMenu(View view, final int position) {
         // inflate menu
         PopupMenu popup = new PopupMenu(view.getContext(), view);
         MenuInflater inflater = popup.getMenuInflater();
@@ -218,7 +211,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
 
                     case R.id.delete_button:
                         current = treatments.remove(position);
-                        new TreatmentDaoAsync().new DeleteTreatmentAsync(
+                        new TreatmentDaoAsync.DeleteTreatmentAsync(
                                 new Callable<Void>() {
                                     public Void call() {
                                         notifyItemRemoved(position);
@@ -245,21 +238,5 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
     public void reload() {
         treatments = MainActivity.database.treatmentDao().getAll();
         notifyDataSetChanged();
-    }
-
-    public Treatment getTreatment(int position) {
-        return treatments.get(position);
-    }
-
-    public void removeItem(int position, long id) {
-        treatments.remove(position);
-        MainActivity.database.treatmentDao().delete(id);
-        notifyItemRemoved(position);
-    }
-
-    public void restoreItem(Treatment item, int position) {
-        treatments.add(position, item);
-        //MainActivity.database.treatmentDao().create(item.content);
-        notifyItemInserted(position);
     }
 }

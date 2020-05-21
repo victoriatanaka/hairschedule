@@ -2,6 +2,7 @@ package com.example.cronogramacapilar;
 
 import android.util.Log;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -32,9 +33,11 @@ public class Treatment implements Cloneable {
     @ColumnInfo(name = "observations")
     public String observations;
 
+    @NonNull
     public Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
     public static Date calculateNextDate(Date lastDate, int numberOfRepeats, String unitOfRepeats) {
         Calendar c = Calendar.getInstance();
         c.setTime(lastDate);

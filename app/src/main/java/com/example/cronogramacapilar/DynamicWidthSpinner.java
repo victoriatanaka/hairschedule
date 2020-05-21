@@ -5,7 +5,6 @@ import android.database.DataSetObserver;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 public class DynamicWidthSpinner extends androidx.appcompat.widget.AppCompatSpinner {
@@ -28,12 +27,12 @@ public class DynamicWidthSpinner extends androidx.appcompat.widget.AppCompatSpin
     }
 
 
-    public final class WrapperSpinnerAdapter implements SpinnerAdapter {
+    final class WrapperSpinnerAdapter implements SpinnerAdapter {
 
         private final SpinnerAdapter mBaseAdapter;
 
 
-        public WrapperSpinnerAdapter(SpinnerAdapter baseAdapter) {
+        WrapperSpinnerAdapter(SpinnerAdapter baseAdapter) {
             mBaseAdapter = baseAdapter;
         }
 
@@ -42,9 +41,11 @@ public class DynamicWidthSpinner extends androidx.appcompat.widget.AppCompatSpin
             return mBaseAdapter.getView(getSelectedItemPosition(), convertView, parent);
         }
 
-        public final SpinnerAdapter getBaseAdapter() {
-            return mBaseAdapter;
-        }
+// --Commented out by Inspection START (21/05/20 16:56):
+//        public final SpinnerAdapter getBaseAdapter() {
+//            return mBaseAdapter;
+//        }
+// --Commented out by Inspection STOP (21/05/20 16:56)
 
         public int getCount() {
             return mBaseAdapter.getCount();

@@ -3,9 +3,7 @@ package com.example.cronogramacapilar.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.util.Function;
 
-import android.app.ActionBar;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,6 +16,7 @@ import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 
@@ -40,7 +39,7 @@ public class TreatmentActivity extends AppCompatActivity {
         frequencyView = findViewById(R.id.frequency);
         observationsView = findViewById(R.id.observations);
         long id = intent.getLongExtra("id", 0);
-        new TreatmentDaoAsync().new GetTreatmentAsync(
+        new TreatmentDaoAsync.GetTreatmentAsync(
                 new Function<Treatment, Void>() {
                     @Override
                     public Void apply(Treatment treatment) {
@@ -49,13 +48,14 @@ public class TreatmentActivity extends AppCompatActivity {
                 }).execute(id);
     }
 
+    @SuppressWarnings("SameReturnValue")
     private Void getTreatmentCallback(Treatment treatment) {
         this.treatment = treatment;
         typeView.setText(treatment.type);
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        lastDateView.setText("Última aplicação: " + formatter.format(treatment.lastDate));
-        nextDateView.setText("Próxima aplicação: " + formatter.format(treatment.nextDate));
-        frequencyView.setText("Repete a cada " + treatment.repeats + " " + treatment.repeatsUnit);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        nextDateView.setText(this.getString(R.string.next_application, formatter.format(treatment.nextDate)));
+        lastDateView.setText(this.getString(R.string.last_application, formatter.format(treatment.lastDate)));
+        frequencyView.setText(this.getString(R.string.repeats_each_n, treatment.repeats, treatment.repeatsUnit));
         observationsView.setText("Observações:\n" + treatment.observations);
         return null;
     }
@@ -63,7 +63,7 @@ public class TreatmentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         MenuHelper.tintMenuIcon(TreatmentActivity.this, menu.findItem(R.id.delete), R.color.icons);
         MenuHelper.tintMenuIcon(TreatmentActivity.this, menu.findItem(R.id.edit), R.color.icons);
         return true;
@@ -75,7 +75,7 @@ public class TreatmentActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.delete:
-                new TreatmentDaoAsync().new DeleteTreatmentAsync(
+                new TreatmentDaoAsync.DeleteTreatmentAsync(
                         new Callable<Void>() {
                             public Void call() {
                                 finish();
@@ -100,7 +100,7 @@ public class TreatmentActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (treatment != null) {
-            new TreatmentDaoAsync().new GetTreatmentAsync(
+            new TreatmentDaoAsync.GetTreatmentAsync(
                     new Function<Treatment, Void>() {
                         @Override
                         public Void apply(Treatment treatment) {

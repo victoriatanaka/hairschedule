@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.util.Function;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,10 +16,8 @@ import com.example.cronogramacapilar.helpers.MenuHelper;
 import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 import com.example.cronogramacapilar.helpers.TreatmentFormHelper;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Locale;
-import java.util.concurrent.Callable;
+import java.util.Objects;
 
 public class EditTreatmentActivity extends AppCompatActivity {
     private EditText lastDateField;
@@ -29,7 +26,6 @@ public class EditTreatmentActivity extends AppCompatActivity {
     private Spinner unitOfRepeatsField;
     private EditText observationsField;
     private long id;
-    private Treatment treatment;
     private TreatmentFormHelper treatmentHelper;
 
     @Override
@@ -46,7 +42,7 @@ public class EditTreatmentActivity extends AppCompatActivity {
         // get id and treatment
         Intent intent = getIntent();
         id = intent.getLongExtra("id", 0);
-        new TreatmentDaoAsync().new GetTreatmentAsync(
+        new TreatmentDaoAsync.GetTreatmentAsync(
                 new Function<Treatment, Void>() {
                     @Override
                     public Void apply(Treatment treatment) {
@@ -55,8 +51,8 @@ public class EditTreatmentActivity extends AppCompatActivity {
                 }).execute(id);
     }
 
+    @SuppressWarnings("SameReturnValue")
     private Void getTreatmentCallback(Treatment treatment) {
-        this.treatment = treatment;
         treatmentHelper = new TreatmentFormHelper(EditTreatmentActivity.this);
 
         // setup type field
@@ -67,7 +63,7 @@ public class EditTreatmentActivity extends AppCompatActivity {
 
         // setup recurrence fields
         treatmentHelper.configureRecurrenceFields(numberOfRepeatsField, unitOfRepeatsField);
-        numberOfRepeatsField.setText(Integer.toString(treatment.repeats));
+        numberOfRepeatsField.setText(String.format(Locale.getDefault(), "%d", treatment.repeats));
         treatmentHelper.updateUnitOfRepeatsValue(treatment.repeatsUnit, unitOfRepeatsField);
 
         // setup observations field
@@ -78,7 +74,7 @@ public class EditTreatmentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         MenuHelper.tintMenuIcon(EditTreatmentActivity.this, menu.findItem(R.id.save), R.color.icons);
 
         return true;

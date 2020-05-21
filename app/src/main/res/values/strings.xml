@@ -1,14 +1,5 @@
 <resources>
     <string name="app_name">Cronograma Capilar</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="tipo_de_tratamento">Tipo de tratamento</string>
     <string name="last_date">Data da última aplicação</string>
     <string name="observations">Observações</string>
@@ -16,15 +7,25 @@
     <string name="edit">Editar</string>
     <string name="delete">Deletar</string>
     <string name="save">Salvar</string>
-    <string name="cancel">Cancelar</string>
     <string name="next_application">Próxima aplicação: %1$s</string>
     <string name="last_application">Última aplicação: %1$s</string>
-    <string name="in_n_days">Em %1$d dias</string>
-    <string name="in_one_day">Em 1 dia</string>
+    <plurals name="in_n_days">
+        <item quantity="one">Em 1 dia</item>
+        <item quantity="other">Em %1$d dias</item>
+    </plurals>
     <string name="today">Hoje!</string>
-    <string name="one_day_late">1 dia atrasado</string>
-    <string name="n_days_late">%1$d dias atrasado</string>
+    <plurals name="n_days_late">
+        <item quantity="one">1 dia atrasado</item>
+        <item quantity="other">%1$d dias atrasado</item>
+    </plurals>
     <string name="error_last_date">"Selecione uma data  "</string>
+    <string name="repeats_each_n">Repete a cada %1$d %2$s</string>
+    <string name="repeats_each">Repete a cada</string>
+    <string name="_1">1</string>
+    <string name="see_details">Ver detalhes</string>
+    <string name="error_treatment_empty">Selecione um tipo de tratamento</string>
+    <string name="error_number_of_repeats">Número não pode ser menor que 0</string>
+    <string name="menu_button_description">Botão de menu</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Reconstrução</item>

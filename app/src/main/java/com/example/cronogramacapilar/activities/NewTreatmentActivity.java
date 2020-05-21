@@ -2,37 +2,23 @@ package com.example.cronogramacapilar.activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.example.cronogramacapilar.R;
-import com.example.cronogramacapilar.Treatment;
 import com.example.cronogramacapilar.helpers.MenuHelper;
-import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 import com.example.cronogramacapilar.helpers.TreatmentFormHelper;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.concurrent.Callable;
+import java.util.Objects;
 
 public class NewTreatmentActivity extends AppCompatActivity {
     private EditText lastDateField;
     private Spinner treatmentField;
     private EditText numberOfRepeatsField;
     private Spinner unitOfRepeatsField;
-    private String treatmentType;
-    private Date lastDate = new Date();
-    private Date nextDate = new Date();
-    private String repeatsUnit;
-    private int repeats;
-    private String observations;
     private TreatmentFormHelper treatmentHelper;
 
     @Override
@@ -52,7 +38,7 @@ public class NewTreatmentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         MenuHelper.tintMenuIcon(NewTreatmentActivity.this, menu.findItem(R.id.save), R.color.icons);
         return true;
     }

@@ -9,7 +9,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activities.EditTreatmentActivity"></activity>
+        <activity android:name=".activities.EditTreatmentActivity" />
         <activity android:name=".activities.TreatmentActivity" />
         <activity android:name=".activities.NewTreatmentActivity" />
         <activity

@@ -1,7 +1,6 @@
 package com.example.cronogramacapilar.activities;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import com.example.cronogramacapilar.R;
@@ -16,16 +15,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 
 public class MainActivity extends AppCompatActivity {
     public static TreatmentsDatabase database;
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private static TreatmentsAdapter adapter;
+    private TreatmentsAdapter adapter;
     private Snackbar snackbar;
 
     @Override
@@ -50,8 +46,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //database.treatmentDao().deleteAll();
-        recyclerView = findViewById(R.id.recycler_view);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         adapter = new TreatmentsAdapter(this);
 
         recyclerView.setLayoutManager(layoutManager);
@@ -86,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
 
+        assert item != null;
         return super.onOptionsItemSelected(item);
     }
 

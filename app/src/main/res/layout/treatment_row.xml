@@ -25,7 +25,7 @@
                 android:id="@+id/treatment_type"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical|left"
+                android:gravity="center_vertical|start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Title" />
 
 
@@ -33,14 +33,14 @@
                 android:id="@+id/next_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical|left"
+                android:gravity="center_vertical|start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
             <TextView
                 android:id="@+id/days_until"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical|left"
+                android:gravity="center_vertical|start"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <Button
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:id="@+id/see_details_button"
-                android:text="Ver detalhes" />
+                android:text="@string/see_details" />
 
             <RelativeLayout
                 android:layout_width="fill_parent"
@@ -80,6 +80,8 @@
             android:tint="@color/cardview_dark_background"
             android:paddingLeft="8dp"
             android:paddingRight="8dp"
-            android:layout_gravity="end|top" />
+            android:layout_gravity="end|top"
+            tools:ignore="PrivateResource"
+            android:contentDescription="@string/menu_button_description" />
     </FrameLayout>
 </androidx.cardview.widget.CardView>

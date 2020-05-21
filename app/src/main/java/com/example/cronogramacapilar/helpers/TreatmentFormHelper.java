@@ -1,5 +1,6 @@
 package com.example.cronogramacapilar.helpers;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.content.Context;
@@ -13,14 +14,14 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.Treatment;
@@ -29,13 +30,14 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
 public final class TreatmentFormHelper {
-    private Context context;
+    private final Context context;
 
     public TreatmentFormHelper(Context context) {
         this.context = context;
@@ -53,18 +55,14 @@ public final class TreatmentFormHelper {
                 context, R.layout.spinner_item_treatment, treatmentsArrayList) {
             @Override
             public boolean isEnabled(int position) {
-                if (position == 0) {
-                    // Disable the first item from Spinner
-                    // First item will be use for hint
-                    return false;
-                } else {
-                    return true;
-                }
+                // Disable the first item from Spinner
+                // First item will be use for hint
+                return position != 0;
             }
 
             @Override
             public View getDropDownView(int position, View convertView,
-                                        ViewGroup parent) {
+                                        @NonNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
                 if (position == 0) {
@@ -78,40 +76,21 @@ public final class TreatmentFormHelper {
         };
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item_treatment);
         treatmentSpinner.setAdapter(spinnerArrayAdapter);
-
-        treatmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selectedItemText = (String) parent.getItemAtPosition(position);
-                // If user change the default selection
-                // First item is disable and it is used for hint
-                if (position > 0) {
-                    // Notify the selected item text
-                    Toast.makeText
-                            (context, "Selected : " + selectedItemText, Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
     }
 
     public void setSpinnerLocked(Spinner treatmentSpinner, String treatmentType) {
 
-        List<String> treatmentsArrayList = Arrays.asList(treatmentType);
+        List<String> treatmentsArrayList = Collections.singletonList(treatmentType);
 
         // Initializing an ArrayAdapter
-        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(
+        final ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(
                 context, R.layout.spinner_item_disabled, treatmentsArrayList);
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item_disabled);
 
         treatmentSpinner.setAdapter(spinnerArrayAdapter);
 
         treatmentSpinner.setOnTouchListener(new View.OnTouchListener() {
+            @SuppressLint("ClickableViewAccessibility")
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_UP) {
@@ -175,7 +154,7 @@ public final class TreatmentFormHelper {
 
     private void updateLabel(Calendar myCalendar, EditText lastDate) {
         String myFormat = "dd/MM/yyyy"; //In which you need put here
-        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.getDefault());
         String dateFormatted = sdf.format(myCalendar.getTime());
         lastDate.setText(dateFormatted);
         int height = lastDate.getHeight();
@@ -209,7 +188,7 @@ public final class TreatmentFormHelper {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() == 0)
                     return;
-                ArrayAdapter<CharSequence> adapter = null;
+                ArrayAdapter<CharSequence> adapter;
                 if (Integer.parseInt(s.toString()) > 1) {
                     adapter = ArrayAdapter.createFromResource(context,
                             R.array.time_plural_array, R.layout.spinner_item);
@@ -255,7 +234,7 @@ public final class TreatmentFormHelper {
         if (treatment != null) {
             treatment.observations = observations;
             treatment.id = id;
-            new TreatmentDaoAsync().new SaveTreatmentAsync(
+            new TreatmentDaoAsync.SaveTreatmentAsync(
                     new Callable<Void>() {
                         public Void call() {
                             ((Activity) context).finish();
@@ -268,7 +247,7 @@ public final class TreatmentFormHelper {
     public void saveNewTreatment(Spinner treatmentField, EditText numberOfRepeatsField, Spinner unitOfRepeatsField, EditText lastDateField, String observations) {
         Treatment treatment = constructTreatment(treatmentField, numberOfRepeatsField, unitOfRepeatsField, lastDateField);
         if (treatment != null) {
-            new TreatmentDaoAsync().new CreateTreatmentAsync(
+            new TreatmentDaoAsync.CreateTreatmentAsync(
                     new Callable<Void>() {
                         public Void call() {
                             ((Activity) context).finish();
@@ -288,7 +267,7 @@ public final class TreatmentFormHelper {
             TextView errorText = (TextView) treatmentField.getSelectedView();
             errorText.setError("");
             errorText.setTextColor(Color.RED);
-            errorText.setText("Selecione um tipo de tratamento");
+            errorText.setText(R.string.error_treatment_empty);
             treatmentField.requestFocus();
             canSave = false;
         }
@@ -296,13 +275,13 @@ public final class TreatmentFormHelper {
         // check if repeats is correct
         treatment.repeats = Integer.parseInt(numberOfRepeatsField.getText().toString());
         if (treatment.repeats <= 0) {
-            numberOfRepeatsField.setError("Número não pode ser menor que 0");
+            numberOfRepeatsField.setError(context.getString(R.string.error_number_of_repeats));
             numberOfRepeatsField.requestFocus();
             canSave = false;
         }
 
         // calculates next date
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         treatment.repeatsUnit = unitOfRepeatsField.getSelectedItem().toString();
 
         try {
