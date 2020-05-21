@@ -1,6 +1,7 @@
 package com.example.cronogramacapilar.helpers;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.arch.core.util.Function;
 

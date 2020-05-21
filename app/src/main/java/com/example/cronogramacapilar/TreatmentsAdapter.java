@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.widget.PopupMenu;
 import androidx.cardview.widget.CardView;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cronogramacapilar.activities.EditTreatmentActivity;
@@ -137,6 +139,12 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             holder.markAsCompleteButton.setVisibility(View.GONE);
         else {
             holder.markAsCompleteButton.setVisibility(View.VISIBLE);
+
+            Drawable drawable = context.getResources().getDrawable(R.drawable.ic_check_black_24dp);
+            drawable = DrawableCompat.wrap(drawable);
+            DrawableCompat.setTint(drawable, context.getResources().getColor(R.color.icons));
+            holder.markAsCompleteButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+
             holder.markAsCompleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {

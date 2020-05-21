@@ -30,11 +30,12 @@ public class EditTreatmentActivity extends AppCompatActivity {
     private EditText observationsField;
     private long id;
     private Treatment treatment;
+    private TreatmentFormHelper treatmentHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_treatment);
+        setContentView(R.layout.activity_new_treatment);
 
         treatmentField = findViewById(R.id.treatment_type);
         lastDateField = findViewById(R.id.last_date);
@@ -56,7 +57,7 @@ public class EditTreatmentActivity extends AppCompatActivity {
 
     private Void getTreatmentCallback(Treatment treatment) {
         this.treatment = treatment;
-        TreatmentFormHelper treatmentHelper = new TreatmentFormHelper(EditTreatmentActivity.this);
+        treatmentHelper = new TreatmentFormHelper(EditTreatmentActivity.this);
 
         // setup type field
         treatmentHelper.setSpinnerLocked(treatmentField, treatment.type);
@@ -91,54 +92,11 @@ public class EditTreatmentActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.save:
-                saveTreatment();
+                String observations = ((EditText) findViewById(R.id.observations)).getText().toString();
+                treatmentHelper.saveTreatment(treatmentField, numberOfRepeatsField, unitOfRepeatsField, lastDateField, observations, id);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
-
-    public void saveTreatment() {
-        boolean canSave = true;
-
-        // check if repeats is correct
-        treatment.repeats = Integer.parseInt(numberOfRepeatsField.getText().toString());
-        if (treatment.repeats <= 0) {
-            numberOfRepeatsField.setError("Número não pode ser menor que 0.");
-            numberOfRepeatsField.requestFocus();
-            canSave = false;
-        }
-
-        // calculates next date
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        treatment.repeatsUnit = unitOfRepeatsField.getSelectedItem().toString();
-
-        try {
-            treatment.lastDate = formatter.parse(lastDateField.getText().toString());
-            treatment.nextDate = Treatment.calculateNextDate(treatment.lastDate, treatment.repeats, treatment.repeatsUnit);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            lastDateField.setHintTextColor(Color.RED);
-            lastDateField.setHint("Selecione uma data.");
-            lastDateField.setError("");
-            canSave = false;
-        }
-
-        if (canSave) {
-            treatment.observations = observationsField.getText().toString();
-            new TreatmentDaoAsync().new SaveTreatmentAsync(
-                    new Callable<Void>() {
-                        public Void call() {
-                            finish();
-                            return null;
-                        }
-                    }, treatment).execute();
-
-        }
-
-        // Toast.makeText(view.getContext(), nextDate.toString(), Toast.LENGTH_LONG).show();
-
-    }
-
 }

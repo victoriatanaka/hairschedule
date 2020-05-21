@@ -24,6 +24,7 @@
     <string name="today">Hoje!</string>
     <string name="one_day_late">1 dia atrasado</string>
     <string name="n_days_late">%1$d dias atrasado</string>
+    <string name="error_last_date">"Selecione uma data  "</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Reconstrução</item>

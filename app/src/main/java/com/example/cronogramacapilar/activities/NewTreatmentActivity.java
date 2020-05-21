@@ -33,6 +33,7 @@ public class NewTreatmentActivity extends AppCompatActivity {
     private String repeatsUnit;
     private int repeats;
     private String observations;
+    private TreatmentFormHelper treatmentHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class NewTreatmentActivity extends AppCompatActivity {
         lastDateField = findViewById(R.id.last_date);
         numberOfRepeatsField = findViewById(R.id.number_of_repeats);
         unitOfRepeatsField = findViewById(R.id.unit_of_repeats);
-        TreatmentFormHelper treatmentHelper = new TreatmentFormHelper(this);
+        treatmentHelper = new TreatmentFormHelper(this);
         treatmentHelper.setSpinnerValues(treatmentField);
         treatmentHelper.configureRecurrenceFields(numberOfRepeatsField, unitOfRepeatsField);
         treatmentHelper.setCalendars(lastDateField);
@@ -65,62 +66,12 @@ public class NewTreatmentActivity extends AppCompatActivity {
                 finish();
                 return true;
             case R.id.save:
-                saveNewTreatment();
+                String observations = ((EditText) findViewById(R.id.observations)).getText().toString();
+                treatmentHelper.saveNewTreatment(treatmentField, numberOfRepeatsField, unitOfRepeatsField, lastDateField, observations);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    public void saveNewTreatment() {
-        boolean canSave = true;
-
-        // check if type was chosen
-        treatmentType = treatmentField.getSelectedItem().toString();
-        if (treatmentType.equals(getResources().getString(R.string.tipo_de_tratamento))) {
-            TextView errorText = (TextView) treatmentField.getSelectedView();
-            errorText.setError("");
-            errorText.setTextColor(Color.RED);
-            errorText.setText("Selecione um tipo de tratamento.");
-            treatmentField.requestFocus();
-            canSave = false;
-        }
-
-        // check if repeats is correct
-        repeats = Integer.parseInt(numberOfRepeatsField.getText().toString());
-        if (repeats <= 0) {
-            numberOfRepeatsField.setError("Número não pode ser menor que 0.");
-            numberOfRepeatsField.requestFocus();
-            canSave = false;
-        }
-
-        // calculates next date
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-        repeatsUnit = unitOfRepeatsField.getSelectedItem().toString();
-
-        try {
-            lastDate = formatter.parse(lastDateField.getText().toString());
-            nextDate = Treatment.calculateNextDate(lastDate, repeats, repeatsUnit);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-            lastDateField.setHintTextColor(Color.RED);
-            lastDateField.setHint("Selecione uma data.");
-            lastDateField.setError("");
-            canSave = false;
-        }
-
-        if (canSave) {
-            observations = ((EditText) findViewById(R.id.observations)).getText().toString();
-            new TreatmentDaoAsync().new CreateTreatmentAsync(
-                    new Callable<Void>() {
-                        public Void call() {
-                            finish();
-                            return null;
-                        }
-                    }, treatmentType, lastDate, nextDate, repeatsUnit, repeats, observations).execute();
-        }
-
-        // Toast.makeText(view.getContext(), nextDate.toString(), Toast.LENGTH_LONG).show();
-    }
 }
