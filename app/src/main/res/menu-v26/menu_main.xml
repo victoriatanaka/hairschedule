@@ -10,13 +10,6 @@
         app:showAsAction="never" />
      -->
     <item
-        android:id="@+id/cancel"
-        android:icon="@drawable/ic_cancel_black_24dp"
-        android:title="@string/cancel"
-        android:tooltipText="@string/cancel"
-        android:visible="false"
-        app:showAsAction="ifRoom" />
-    <item
         android:id="@+id/save"
         android:icon="@drawable/ic_save_black_24dp"
         android:title="@string/save"

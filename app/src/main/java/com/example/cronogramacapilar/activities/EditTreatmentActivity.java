@@ -78,7 +78,7 @@ public class EditTreatmentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        MenuHelper.tintMenuIcon(EditTreatmentActivity.this, menu.findItem(R.id.cancel), R.color.icons);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         MenuHelper.tintMenuIcon(EditTreatmentActivity.this, menu.findItem(R.id.save), R.color.icons);
 
         return true;
@@ -88,8 +88,8 @@ public class EditTreatmentActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         switch (item.getItemId()) {
-            case R.id.cancel:
-                finish();
+            case android.R.id.home:
+                this.finish();
                 return true;
             case R.id.save:
                 String observations = ((EditText) findViewById(R.id.observations)).getText().toString();

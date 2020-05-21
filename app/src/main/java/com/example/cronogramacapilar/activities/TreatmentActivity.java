@@ -3,6 +3,7 @@ package com.example.cronogramacapilar.activities;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.arch.core.util.Function;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -62,6 +63,7 @@ public class TreatmentActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         MenuHelper.tintMenuIcon(TreatmentActivity.this, menu.findItem(R.id.delete), R.color.icons);
         MenuHelper.tintMenuIcon(TreatmentActivity.this, menu.findItem(R.id.edit), R.color.icons);
         return true;
@@ -85,7 +87,9 @@ public class TreatmentActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, EditTreatmentActivity.class);
                 intent.putExtra("id", treatment.id);
                 this.startActivity(intent);
-
+                return true;
+            case android.R.id.home:
+                this.finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
