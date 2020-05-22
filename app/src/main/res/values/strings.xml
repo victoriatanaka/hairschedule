@@ -19,7 +19,6 @@
         <item quantity="other">%1$d dias atrasado</item>
     </plurals>
     <string name="error_last_date">"Selecione uma data  "</string>
-    <string name="repeats_each_n">Repete a cada %1$d %2$s</string>
     <string name="repeats_each">Repete a cada</string>
     <string name="_1">1</string>
     <string name="see_details">Ver detalhes</string>
@@ -30,6 +29,9 @@
     <string name="last_application">Última aplicação</string>
     <string name="other_treatment">Outro</string>
     <string name="error_other_treatment_empty">Tipo de tratamento não pode estar vazio</string>
+    <string name="description_icon_type">Ícone para o tipo de tratamento</string>
+    <string name="description_icon_repeats">Ícone para a frequência de aplicação</string>
+    <string name="description_icon_date">Ícone para a data</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Acidificação</item>

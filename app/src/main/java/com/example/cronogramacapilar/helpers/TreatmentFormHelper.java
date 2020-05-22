@@ -18,13 +18,11 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,6 +40,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -123,7 +122,7 @@ public final class TreatmentFormHelper {
                     else if (c == '\n') {
                         otherTreatmentField.clearFocus();
                         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(otherTreatmentField.getWindowToken(), 0);
+                        Objects.requireNonNull(imm).hideSoftInputFromWindow(otherTreatmentField.getWindowToken(), 0);
                         keepOriginal = false;
                     } else
                         keepOriginal = false;

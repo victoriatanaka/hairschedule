@@ -54,9 +54,22 @@ public class TreatmentActivity extends AppCompatActivity {
     private Void getTreatmentCallback(Treatment treatment) {
         this.treatment = treatment;
         typeView.setText(treatment.type);
+        setTreatmentTypeIcon(treatment.type);
 
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        nextDateView.setText(formatter.format(treatment.nextDate));
+        lastDateView.setText(formatter.format(treatment.lastDate));
+        frequencyView.setText(String.format(Locale.getDefault(), "%d %s", treatment.repeats, treatment.repeatsUnit));
+        if (!treatment.observations.isEmpty()) {
+            findViewById(R.id.observations_title).setVisibility(View.VISIBLE);
+            observationsView.setText(treatment.observations);
+        }
+        return null;
+    }
+
+    private void setTreatmentTypeIcon(String treatmentType) {
         ImageView typeIcon = findViewById(R.id.icon_type);
-        switch (treatment.type.toLowerCase()) {
+        switch (treatmentType.toLowerCase()) {
             case "hidratação":
                 typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_rain_drops));
                 break;
@@ -71,18 +84,7 @@ public class TreatmentActivity extends AppCompatActivity {
                 break;
             default:
                 typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_herbal_treatment));
-
         }
-
-        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        nextDateView.setText(formatter.format(treatment.nextDate));
-        lastDateView.setText(formatter.format(treatment.lastDate));
-        frequencyView.setText(String.format(Locale.getDefault(), "%d %s", treatment.repeats, treatment.repeatsUnit));
-        if (!treatment.observations.isEmpty()) {
-            findViewById(R.id.observations_title).setVisibility(View.VISIBLE);
-            observationsView.setText(treatment.observations);
-        }
-        return null;
     }
 
     @Override

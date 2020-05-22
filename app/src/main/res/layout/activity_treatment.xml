@@ -31,7 +31,8 @@
             android:id="@+id/icon_type"
             android:layout_width="60dp"
             android:layout_height="60dp"
-            android:src="@drawable/ic_haircare" />
+            android:src="@drawable/ic_herbal_treatment"
+            android:contentDescription="@string/description_icon_type" />
     </RelativeLayout>
 
     <!-- repeats field -->
@@ -68,7 +69,8 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentStart="true"
-            android:src="@drawable/ic_update_black_24dp" />
+            android:src="@drawable/ic_update_black_24dp"
+            android:contentDescription="@string/description_icon_repeats" />
     </RelativeLayout>
 
     <!-- next application field -->
@@ -105,7 +107,8 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentStart="true"
-            android:src="@drawable/ic_next_date" />
+            android:src="@drawable/ic_next_date"
+            android:contentDescription="@string/description_icon_date" />
     </RelativeLayout>
 
     <!-- last application field -->
@@ -142,7 +145,8 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_alignParentStart="true"
-            android:src="@drawable/ic_previous_date" />
+            android:src="@drawable/ic_previous_date"
+            android:contentDescription="@string/description_icon_date" />
     </RelativeLayout>
 
     <!-- observations field -->
@@ -158,7 +162,6 @@
         android:textStyle="bold" />
 
     <ScrollView
-        android:id="@+id/ScrollView01"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 

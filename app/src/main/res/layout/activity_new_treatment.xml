@@ -32,7 +32,8 @@
         android:id="@+id/other_treatment"
         android:layout_marginBottom="8dp"
         android:layout_marginTop="8dp"
-        android:layout_marginHorizontal="16dp" />
+        android:layout_marginHorizontal="16dp"
+        android:importantForAutofill="no" />
 
     <View
         android:layout_width="match_parent"
@@ -144,12 +145,4 @@
         android:inputType="text|textMultiLine"
         android:importantForAutofill="no" />
 
-    <!-- Dummy item for focus at startup -->
-    <LinearLayout
-        android:id="@+id/dummy_id"
-        android:orientation="vertical"
-        android:layout_width="0px"
-        android:layout_height="0px"
-        android:focusable="true"
-        android:focusableInTouchMode="true" />
 </LinearLayout>

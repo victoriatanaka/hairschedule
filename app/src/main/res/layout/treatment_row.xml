@@ -2,7 +2,6 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
@@ -79,7 +78,7 @@
             android:background="?selectableItemBackgroundBorderless"
             android:tint="@color/cardview_dark_background"
             android:paddingStart="16dp"
-            android:paddingEnd="8dp"
+            android:paddingEnd="16dp"
             android:layout_gravity="end|top"
             tools:ignore="PrivateResource"
             android:contentDescription="@string/menu_button_description" />
