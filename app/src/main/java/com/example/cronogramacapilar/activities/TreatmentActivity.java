@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -77,7 +78,10 @@ public class TreatmentActivity extends AppCompatActivity {
         nextDateView.setText(formatter.format(treatment.nextDate));
         lastDateView.setText(formatter.format(treatment.lastDate));
         frequencyView.setText(String.format(Locale.getDefault(), "%d %s", treatment.repeats, treatment.repeatsUnit));
-        observationsView.setText(treatment.observations);
+        if (!treatment.observations.isEmpty()) {
+            findViewById(R.id.observations_title).setVisibility(View.VISIBLE);
+            observationsView.setText(treatment.observations);
+        }
         return null;
     }
 
