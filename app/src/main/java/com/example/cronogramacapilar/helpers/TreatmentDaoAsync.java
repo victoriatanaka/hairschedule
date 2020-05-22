@@ -9,6 +9,7 @@ import com.example.cronogramacapilar.activities.MainActivity;
 
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 public final class TreatmentDaoAsync {
@@ -76,6 +77,24 @@ public final class TreatmentDaoAsync {
         @Override
         protected void onPostExecute(Treatment treatment) {
             callback.apply(treatment);
+        }
+    }
+
+    public static class GetAllTreatmentsAsync extends AsyncTask<Long, Void, List<Treatment>> {
+        private final Function<List<Treatment>, Void> callback;
+
+        public GetAllTreatmentsAsync(Function<List<Treatment>, Void> callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected List<Treatment> doInBackground(Long... longs) {
+            return MainActivity.database.treatmentDao().getAll();
+        }
+
+        @Override
+        protected void onPostExecute(List<Treatment> treatments) {
+            callback.apply(treatments);
         }
     }
 

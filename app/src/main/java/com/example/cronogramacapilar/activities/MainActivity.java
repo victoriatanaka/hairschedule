@@ -6,6 +6,8 @@ import android.os.Bundle;
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.TreatmentsAdapter;
 import com.example.cronogramacapilar.TreatmentsDatabase;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -15,14 +17,17 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.room.Room;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     public static TreatmentsDatabase database;
     private TreatmentsAdapter adapter;
     private Snackbar snackbar;
+    private ShowcaseView showCaseView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,10 +41,11 @@ public class MainActivity extends AppCompatActivity {
                 .allowMainThreadQueries()
                 .build();
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+        final FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                hideShowcase();
                 Intent intent = new Intent(view.getContext(), NewTreatmentActivity.class);
                 view.getContext().startActivity(intent);
             }
@@ -52,7 +58,32 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
+    }
 
+    public void hideShowcase() {
+        if (showCaseView != null)
+            showCaseView.hide();
+    }
+
+    public void createShowcase() {
+        if (showCaseView != null) {
+            showCaseView.show();
+            Log.d("teste", "mostrei");
+            return;
+        }
+        Button button = new Button(this);
+        button.setText("");
+        button.setEnabled(false);
+        button.setVisibility(View.GONE);
+
+        showCaseView = new ShowcaseView.Builder(this)
+                .setContentTitle(this.getString(R.string.showcase_create_treatment_title))
+                .setContentText(this.getString(R.string.showcase_create_treatment_text))
+                .replaceEndButton(button)
+                .setTarget(new ViewTarget(R.id.fab, this))
+                .hideOnTouchOutside()
+                .setStyle(R.style.CustomShowcaseTheme)
+                .build();
     }
 
     @Override

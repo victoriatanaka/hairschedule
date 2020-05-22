@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.PopupMenu;
+import androidx.arch.core.util.Function;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -216,6 +217,8 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                                 new Callable<Void>() {
                                     public Void call() {
                                         treatments.remove(position);
+                                        if (treatments.isEmpty())
+                                            ((MainActivity) context).createShowcase();
                                         notifyItemRemoved(position);
                                         notifyItemRangeChanged(position, treatments.size());
                                         return null;
@@ -238,7 +241,18 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
     }
 
     public void reload() {
-        treatments = MainActivity.database.treatmentDao().getAll();
-        notifyDataSetChanged();
+        new TreatmentDaoAsync.GetAllTreatmentsAsync(
+                new Function<List<Treatment>, Void>() {
+                    @Override
+                    public Void apply(List<Treatment> treatmentList) {
+                        treatments = treatmentList;
+                        if (treatments.isEmpty())
+                            ((MainActivity) context).createShowcase();
+                        else
+                            ((MainActivity) context).hideShowcase();
+                        notifyDataSetChanged();
+                        return null;
+                    }
+                }).execute();
     }
 }
