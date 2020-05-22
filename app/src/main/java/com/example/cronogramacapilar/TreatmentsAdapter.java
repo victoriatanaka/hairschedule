@@ -3,9 +3,11 @@ package com.example.cronogramacapilar;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,9 +18,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.arch.core.util.Function;
-import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cronogramacapilar.activities.EditTreatmentActivity;
@@ -98,7 +100,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             long daysUntil = now.until(nextDate, ChronoUnit.DAYS);
             long daysSince = now.until(lastDate, ChronoUnit.DAYS);
 
-            setupMarkAsCompleteButton(holder, daysSince, position);
+            setupMarkAsCompleteButton(holder, daysSince, daysUntil, position);
             setupDaysUntil(holder, daysUntil);
         }
 
@@ -120,25 +122,34 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         });
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void setupDaysUntil(TreatmentViewHolder holder, long daysUntil) {
         if (daysUntil >= 1)
             holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.in_n_days, (int) daysUntil, daysUntil));
-        else if (daysUntil == 0)
+        else if (daysUntil == 0) {
             holder.daysUntilView.setText(R.string.today);
-        else
+            holder.daysUntilView.setTypeface(holder.daysUntilView.getTypeface(), Typeface.BOLD_ITALIC);
+        } else {
             holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.n_days_late, (int) -daysUntil, -daysUntil));
+            Drawable drawable = context.getResources().getDrawable(R.drawable.ic_warning_black_24dp);
+            holder.daysUntilView.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable, null, null, null);
+        }
     }
 
-    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, final int position) {
+    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, long daysUnitl, final int position) {
         if (daysSince == 0)
             holder.markAsCompleteButton.setVisibility(View.GONE);
         else {
             holder.markAsCompleteButton.setVisibility(View.VISIBLE);
 
-            Drawable drawable = context.getResources().getDrawable(R.drawable.ic_check_black_24dp);
-            drawable = DrawableCompat.wrap(drawable);
-            DrawableCompat.setTint(drawable, context.getResources().getColor(R.color.icons));
-            holder.markAsCompleteButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+            if (daysUnitl <= 0)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    holder.markAsCompleteButton.setTextAppearance(R.style.TextAppearance_AppCompat_Widget_Button_Colored);
+                    Drawable drawable = context.getResources().getDrawable(R.drawable.ic_check_white_24dp);
+                    holder.markAsCompleteButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
+                    holder.markAsCompleteButton.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                }
+
 
             holder.markAsCompleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -172,7 +183,6 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         snackbar.setAction("Desfazer", new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("teste", previous.lastDate.toString());
                 new TreatmentDaoAsync.SaveTreatmentAsync(
                         new Callable<Void>() {
                             public Void call() {

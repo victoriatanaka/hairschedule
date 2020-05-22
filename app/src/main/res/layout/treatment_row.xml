@@ -40,6 +40,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical|start"
+                android:drawablePadding="5dp"
                 android:textAppearance="@style/TextAppearance.AppCompat.Small" />
 
             <Button
@@ -58,7 +59,7 @@
                     android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:id="@+id/mark_as_complete_button"
-                    style="@style/Widget.AppCompat.Button.Colored"
+                    style="@style/Widget.AppCompat.Button"
                     android:drawableEnd="@drawable/ic_check_black_24dp"
                     android:text="@string/mark_as_done" />
             </RelativeLayout>
