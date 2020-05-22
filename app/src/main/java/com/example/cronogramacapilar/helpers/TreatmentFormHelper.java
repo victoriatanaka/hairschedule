@@ -7,6 +7,10 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.Editable;
+import android.text.InputFilter;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
@@ -14,9 +18,13 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +43,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public final class TreatmentFormHelper {
     private final Context context;
@@ -43,7 +53,12 @@ public final class TreatmentFormHelper {
         this.context = context;
     }
 
-    public void setSpinnerValues(Spinner treatmentSpinner) {
+    public void setTreatmentSpinner(Spinner treatmentField) {
+        setSpinnerValues(treatmentField);
+        setSpinnerWithEditText(treatmentField);
+    }
+
+    private void setSpinnerValues(Spinner treatmentSpinner) {
 
         // Get reference of widgets from XML layout
 
@@ -76,6 +91,62 @@ public final class TreatmentFormHelper {
         };
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_item_treatment);
         treatmentSpinner.setAdapter(spinnerArrayAdapter);
+    }
+
+    private void setSpinnerWithEditText(Spinner treatmentSpinner) {
+        treatmentSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (parent.getItemAtPosition(position).toString().equals(parent.getResources().getString(R.string.other_treatment))) {
+                    view.getRootView().findViewById(R.id.other_treatment).setVisibility(View.VISIBLE);
+                } else
+                    view.getRootView().findViewById(R.id.other_treatment).setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+    }
+
+    public void setOtherTreatmentFilter(final EditText otherTreatmentField) {
+        otherTreatmentField.setFilters(new InputFilter[]{new InputFilter() {
+            @Override
+            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
+                boolean keepOriginal = true;
+                StringBuilder sb = new StringBuilder(end - start);
+                for (int i = start; i < end; i++) {
+                    char c = source.charAt(i);
+                    if (isCharAllowed(c)) // put your condition here
+                        sb.append(c);
+                    else if (c == '\n') {
+                        otherTreatmentField.clearFocus();
+                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(otherTreatmentField.getWindowToken(), 0);
+                        keepOriginal = false;
+                    } else
+                        keepOriginal = false;
+                }
+                if (keepOriginal)
+                    return null;
+                else {
+                    if (source instanceof Spanned) {
+                        SpannableString sp = new SpannableString(sb);
+                        TextUtils.copySpansFrom((Spanned) source, start, sb.length(), null, sp, 0);
+                        return sp;
+                    } else {
+                        return sb;
+                    }
+                }
+            }
+
+            private boolean isCharAllowed(char c) {
+                Pattern ps = Pattern.compile("^[\\p{L}\\d\\t ]+$");
+                Matcher ms = ps.matcher(String.valueOf(c));
+                return ms.matches();
+            }
+        }});
     }
 
     public void setSpinnerLocked(Spinner treatmentSpinner, String treatmentType) {
@@ -272,6 +343,18 @@ public final class TreatmentFormHelper {
             canSave = false;
         }
 
+        // check if other type is selected; then treatment type will be whatever the user entered in other treatment field
+        else if (treatment.type.equals(context.getResources().getString(R.string.other_treatment))) {
+            EditText otherTreatmentField = ((Activity) context).findViewById(R.id.other_treatment);
+            String otherTreatment = otherTreatmentField.getText().toString();
+            if (otherTreatment.isEmpty()) {
+                otherTreatmentField.setError(context.getString(R.string.error_other_treatment_empty));
+                otherTreatmentField.requestFocus();
+                canSave = false;
+            }
+            treatment.type = otherTreatment;
+        }
+
         // check if repeats is correct
         treatment.repeats = Integer.parseInt(numberOfRepeatsField.getText().toString());
         if (treatment.repeats <= 0) {
@@ -301,5 +384,4 @@ public final class TreatmentFormHelper {
         }
         return null;
     }
-
 }

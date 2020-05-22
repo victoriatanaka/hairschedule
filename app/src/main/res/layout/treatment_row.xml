@@ -78,8 +78,8 @@
             android:src="@drawable/ic_more_vert_black_24dp"
             android:background="?selectableItemBackgroundBorderless"
             android:tint="@color/cardview_dark_background"
-            android:paddingLeft="8dp"
-            android:paddingRight="8dp"
+            android:paddingStart="16dp"
+            android:paddingEnd="8dp"
             android:layout_gravity="end|top"
             tools:ignore="PrivateResource"
             android:contentDescription="@string/menu_button_description" />

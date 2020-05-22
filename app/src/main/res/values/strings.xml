@@ -28,6 +28,8 @@
     <string name="menu_button_description">Botão de menu</string>
     <string name="next_application">Próxima aplicação</string>
     <string name="last_application">Última aplicação</string>
+    <string name="other_treatment">Outro</string>
+    <string name="error_other_treatment_empty">Tipo de tratamento não pode estar vazio</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Acidificação</item>

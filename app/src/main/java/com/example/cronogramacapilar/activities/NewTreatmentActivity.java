@@ -30,7 +30,8 @@ public class NewTreatmentActivity extends AppCompatActivity {
         numberOfRepeatsField = findViewById(R.id.number_of_repeats);
         unitOfRepeatsField = findViewById(R.id.unit_of_repeats);
         treatmentHelper = new TreatmentFormHelper(this);
-        treatmentHelper.setSpinnerValues(treatmentField);
+        treatmentHelper.setTreatmentSpinner(treatmentField);
+        treatmentHelper.setOtherTreatmentFilter((EditText) findViewById(R.id.other_treatment));
         treatmentHelper.configureRecurrenceFields(numberOfRepeatsField, unitOfRepeatsField);
         treatmentHelper.setCalendars(lastDateField);
     }
