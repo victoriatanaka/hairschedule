@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cronogramacapilar.activities.EditTreatmentActivity;
 import com.example.cronogramacapilar.activities.MainActivity;
 import com.example.cronogramacapilar.activities.TreatmentActivity;
+import com.example.cronogramacapilar.helpers.DeleteTreatmentWithConfirm;
 import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -210,15 +211,16 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                         return true;
 
                     case R.id.delete_button:
-                        current = treatments.remove(position);
-                        new TreatmentDaoAsync.DeleteTreatmentAsync(
+                        current = treatments.get(position);
+                        DeleteTreatmentWithConfirm.deleteTreatment(
                                 new Callable<Void>() {
                                     public Void call() {
+                                        treatments.remove(position);
                                         notifyItemRemoved(position);
                                         notifyItemRangeChanged(position, treatments.size());
                                         return null;
                                     }
-                                }).execute(current.id);
+                                }, current.id, context);
                         return true;
 
                     default:

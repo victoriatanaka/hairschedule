@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.Treatment;
+import com.example.cronogramacapilar.helpers.DeleteTreatmentWithConfirm;
 import com.example.cronogramacapilar.helpers.MenuHelper;
 import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 
@@ -102,13 +103,13 @@ public class TreatmentActivity extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.delete:
-                new TreatmentDaoAsync.DeleteTreatmentAsync(
+                DeleteTreatmentWithConfirm.deleteTreatment(
                         new Callable<Void>() {
                             public Void call() {
                                 finish();
                                 return null;
                             }
-                        }).execute(treatment.id);
+                        }, treatment.id, this);
                 return true;
             case R.id.edit:
                 Intent intent = new Intent(this, EditTreatmentActivity.class);

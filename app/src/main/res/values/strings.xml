@@ -32,6 +32,8 @@
     <string name="description_icon_type">Ícone para o tipo de tratamento</string>
     <string name="description_icon_repeats">Ícone para a frequência de aplicação</string>
     <string name="description_icon_date">Ícone para a data</string>
+    <string name="confirm_delete_message">Deletar este tratamento?</string>
+    <string name="cancel">Cancelar</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Acidificação</item>
