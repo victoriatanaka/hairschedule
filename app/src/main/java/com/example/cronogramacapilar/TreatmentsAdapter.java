@@ -84,8 +84,8 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
 
         // setup dates
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        holder.nextDateView.setText(context.getString(R.string.next_application, formatter.format(current.nextDate)));
-        holder.lastDateView.setText(context.getString(R.string.last_application, formatter.format(current.lastDate)));
+        holder.nextDateView.setText(context.getString(R.string.next_application_n, formatter.format(current.nextDate)));
+        holder.lastDateView.setText(context.getString(R.string.last_application_n, formatter.format(current.lastDate)));
 
         // setup days until + button to mark as complete
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {

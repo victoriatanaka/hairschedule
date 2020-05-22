@@ -4,39 +4,156 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="26dp"
     tools:context=".activities.TreatmentActivity">
 
-    <TextView
-        android:id="@+id/treatment_type"
-        android:layout_width="wrap_content"
+    <!-- type field -->
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:padding="10dp" />
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="20dp"
+        android:gravity="start"
+        android:orientation="horizontal">
 
-    <TextView
-        android:id="@+id/last_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:padding="10dp" />
+        <TextView
+            android:id="@+id/treatment_type"
+            android:layout_width="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:layout_toEndOf="@+id/icon_type"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@android:color/transparent"
+            android:textAppearance="@style/TextAppearance.AppCompat.Headline" />
 
-    <TextView
-        android:id="@+id/next_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:padding="10dp" />
+        <ImageView
+            android:layout_alignParentStart="true"
+            android:id="@+id/icon_type"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_haircare" />
+    </RelativeLayout>
 
+    <!-- repeats field -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:gravity="start"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/icon_repeats"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/repeats_each"
+                android:textAllCaps="true"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/frequency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/icon_repeats"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_update_black_24dp" />
+    </RelativeLayout>
+
+    <!-- next application field -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:gravity="start"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/icon_next_date"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/next_application"
+                android:textAllCaps="true"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/next_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/icon_next_date"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_next_date" />
+    </RelativeLayout>
+
+    <!-- last application field -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="10dp"
+        android:gravity="start"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@+id/icon_last_date"
+            android:orientation="vertical"
+            android:paddingHorizontal="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/last_application"
+                android:textAllCaps="true"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/last_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/icon_last_date"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_previous_date" />
+    </RelativeLayout>
+
+    <!-- observations field -->
     <TextView
-        android:id="@+id/frequency"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
-        android:gravity="top"
-        android:padding="10dp" />
+        android:text="Observações:"
+        android:textAllCaps="true"
+        android:textStyle="bold" />
 
     <ScrollView
         android:id="@+id/ScrollView01"
@@ -48,8 +165,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
-            android:gravity="top"
-            android:padding="10dp" />
+            android:gravity="top" />
     </ScrollView>
 
 </LinearLayout>

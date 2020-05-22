@@ -7,8 +7,8 @@
     <string name="edit">Editar</string>
     <string name="delete">Deletar</string>
     <string name="save">Salvar</string>
-    <string name="next_application">Próxima aplicação: %1$s</string>
-    <string name="last_application">Última aplicação: %1$s</string>
+    <string name="next_application_n">Próxima aplicação: %1$s</string>
+    <string name="last_application_n">Última aplicação: %1$s</string>
     <plurals name="in_n_days">
         <item quantity="one">Em 1 dia</item>
         <item quantity="other">Em %1$d dias</item>
@@ -26,12 +26,14 @@
     <string name="error_treatment_empty">Selecione um tipo de tratamento</string>
     <string name="error_number_of_repeats">Número não pode ser menor que 0</string>
     <string name="menu_button_description">Botão de menu</string>
+    <string name="next_application">Próxima aplicação</string>
+    <string name="last_application">Última aplicação</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
-        <item>Reconstrução</item>
+        <item>Acidificação</item>
         <item>Hidratação</item>
         <item>Nutrição</item>
-        <item>Acidificação</item>
+        <item>Reconstrução</item>
         <item>Outro</item>
     </string-array>
     <string-array name="time_singular_array">

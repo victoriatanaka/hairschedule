@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.cronogramacapilar.R;
@@ -52,11 +53,31 @@ public class TreatmentActivity extends AppCompatActivity {
     private Void getTreatmentCallback(Treatment treatment) {
         this.treatment = treatment;
         typeView.setText(treatment.type);
+
+        ImageView typeIcon = findViewById(R.id.icon_type);
+        switch (treatment.type.toLowerCase()) {
+            case "hidratação":
+                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_rain_drops));
+                break;
+            case "reconstrução":
+                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_protein_supplements));
+                break;
+            case "nutrição":
+                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_coconut_oil));
+                break;
+            case "acidificação":
+                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_cider));
+                break;
+            default:
+                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_herbal_treatment));
+
+        }
+
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        nextDateView.setText(this.getString(R.string.next_application, formatter.format(treatment.nextDate)));
-        lastDateView.setText(this.getString(R.string.last_application, formatter.format(treatment.lastDate)));
-        frequencyView.setText(this.getString(R.string.repeats_each_n, treatment.repeats, treatment.repeatsUnit));
-        observationsView.setText("Observações:\n" + treatment.observations);
+        nextDateView.setText(formatter.format(treatment.nextDate));
+        lastDateView.setText(formatter.format(treatment.lastDate));
+        frequencyView.setText(String.format(Locale.getDefault(), "%d %s", treatment.repeats, treatment.repeatsUnit));
+        observationsView.setText(treatment.observations);
         return null;
     }
 
