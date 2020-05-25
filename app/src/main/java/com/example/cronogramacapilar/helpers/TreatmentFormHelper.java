@@ -208,9 +208,11 @@ public final class TreatmentFormHelper {
 
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(context, date, myCalendar
+                DatePickerDialog mDatePicker = new DatePickerDialog(context, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                mDatePicker.show();
+                mDatePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
             }
         });
 

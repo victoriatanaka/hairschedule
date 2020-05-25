@@ -9,6 +9,7 @@ import android.os.Bundle;
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.TreatmentsAdapter;
 import com.example.cronogramacapilar.TreatmentsDatabase;
+import com.example.cronogramacapilar.fragments.MarkAsCompleteBottomFragments;
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -75,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
     public void createShowcase() {
         if (showCaseView != null) {
             showCaseView.show();
-            Log.d("teste", "mostrei");
             return;
         }
         Button button = new Button(this);

@@ -1,6 +1,7 @@
 package com.example.cronogramacapilar;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -8,14 +9,18 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Bundle;
+import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -27,9 +32,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.cronogramacapilar.activities.EditTreatmentActivity;
 import com.example.cronogramacapilar.activities.MainActivity;
 import com.example.cronogramacapilar.activities.TreatmentActivity;
+import com.example.cronogramacapilar.fragments.MarkAsCompleteBottomFragments;
 import com.example.cronogramacapilar.helpers.DeleteTreatmentWithConfirm;
 import com.example.cronogramacapilar.helpers.NotificationHelper;
 import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
@@ -37,12 +44,13 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 
-public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.TreatmentViewHolder> {
+public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.TreatmentViewHolder> implements NavigationView.OnNavigationItemSelectedListener {
     public static class TreatmentViewHolder extends RecyclerView.ViewHolder {
         final TextView typeTextView;
         final TextView lastDateView;
@@ -68,10 +76,13 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
 
     private List<Treatment> treatments = new ArrayList<>();
     private final Context context;
+    private final MarkAsCompleteBottomFragments markAsCompleteBottomFragments;
 
     // Constructor receives the Activity's context
     public TreatmentsAdapter(Context context) {
         this.context = context;
+        markAsCompleteBottomFragments = new MarkAsCompleteBottomFragments(this);
+
     }
 
     @Override
@@ -133,8 +144,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.in_n_days, (int) daysUntil, daysUntil));
             holder.daysUntilView.setTypeface(null, Typeface.NORMAL);
             holder.daysUntilView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
-        }
-        else if (daysUntil == 0) {
+        } else if (daysUntil == 0) {
             holder.daysUntilView.setText(R.string.today);
             holder.daysUntilView.setTypeface(null, Typeface.BOLD_ITALIC);
             holder.daysUntilView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
@@ -146,7 +156,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         }
     }
 
-    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, long daysUntil, final int position) {
+    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, final long daysUntil, final int position) {
         if (daysSince == 0)
             holder.markAsCompleteButton.setVisibility(View.GONE);
         else {
@@ -164,28 +174,77 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
             holder.markAsCompleteButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(final View v) {
-                    final Treatment current = treatments.get(position);
-                    Treatment previous = null;
-                    try {
-                        previous = (Treatment) current.clone();
-                    } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
-                    }
-                    current.lastDate = new Date();
-                    current.nextDate = Treatment.calculateNextDate(current.lastDate, current.repeats, current.repeatsUnit);
-                    final Treatment finalPrevious = previous;
-                    new TreatmentDaoAsync.SaveTreatmentAsync(
-                            new Callable<Void>() {
-                                public Void call() {
-                                    reload();
-                                    NotificationHelper.createNotification(current, context);
-                                    createSnackbar(finalPrevious);
-                                    return null;
-                                }
-                            }, current).execute();
+                    if (daysUntil < 0) {
+                        Bundle bundle = new Bundle();
+                        Treatment current = treatments.get(position);
+                        bundle.putString("correctDate", (String) DateFormat.format("dd/MM/yyyy", current.nextDate));
+                        bundle.putInt("position", position);
+                        // set Fragmentclass Arguments
+                        markAsCompleteBottomFragments.setArguments(bundle);
+                        markAsCompleteBottomFragments.show(((MainActivity) context).getSupportFragmentManager(), markAsCompleteBottomFragments.getTag());
+                    } else
+                        updateTreatmentLastDate(position, new Date()); // done today
                 }
             });
         }
+    }
+
+    private void updateTreatmentLastDate(int position, Date lastDate) {
+        final Treatment current = treatments.get(position);
+        Treatment previous = null;
+        try {
+            previous = (Treatment) current.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        current.lastDate = lastDate;
+        current.nextDate = Treatment.calculateNextDate(current.lastDate, current.repeats, current.repeatsUnit);
+        final Treatment finalPrevious = previous;
+        new TreatmentDaoAsync.SaveTreatmentAsync(
+                new Callable<Void>() {
+                    public Void call() {
+                        reload();
+                        NotificationHelper.createNotification(current, context);
+                        createSnackbar(finalPrevious);
+                        return null;
+                    }
+                }, current).execute();
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        markAsCompleteBottomFragments.dismiss();
+        final int position = markAsCompleteBottomFragments.getArguments().getInt("position");
+        switch (item.getItemId()) {
+            case R.id.mark_as_complete_correct:
+                Treatment current = treatments.get(position);
+                updateTreatmentLastDate(position, current.nextDate);
+                return true;
+            case R.id.mark_as_complete_today:
+                updateTreatmentLastDate(position, new Date()); // done today
+                return true;
+            case R.id.mark_as_complete_choose:
+                final Calendar myCalendar = Calendar.getInstance();
+
+                final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+                    public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                          int dayOfMonth) {
+                        myCalendar.set(year, monthOfYear, dayOfMonth);
+                        Date date = myCalendar.getTime();
+                        updateTreatmentLastDate(position, date);
+                    }
+
+                };
+
+                DatePickerDialog mDatePicker = new DatePickerDialog(context, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                mDatePicker.show();
+                mDatePicker.getDatePicker().setMaxDate(System.currentTimeMillis());
+
+                return true;
+        }
+        return false;
     }
 
     private void createSnackbar(final Treatment previous) {
