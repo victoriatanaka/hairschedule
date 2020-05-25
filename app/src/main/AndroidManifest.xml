@@ -10,8 +10,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".activities.EditTreatmentActivity" />
-        <activity android:name=".activities.TreatmentActivity" />
-        <activity android:name=".activities.NewTreatmentActivity" />
+        <activity
+            android:name=".activities.TreatmentActivity"
+            android:parentActivityName="activities.MainActivity" />
+        <activity
+            android:name=".activities.NewTreatmentActivity"
+            android:parentActivityName="activities.MainActivity" />
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"
@@ -22,6 +26,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".Broadcasts$ReminderBroadcast" />
+        <receiver android:name=".Broadcasts$LateReminderBroadcast" />
     </application>
 
 </manifest>

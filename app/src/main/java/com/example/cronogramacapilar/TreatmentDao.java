@@ -9,7 +9,7 @@ import java.util.List;
 @Dao
 public interface TreatmentDao {
     @Query("INSERT INTO treatments (type, last_date, next_date, repeats, repeats_unit, observations) VALUES (:type, :lastDate, :nextDate, :repeats, :repeatsUnit, :observations)")
-    void create(String type, Date lastDate, Date nextDate, int repeats, String repeatsUnit, String observations);
+    long create(String type, Date lastDate, Date nextDate, int repeats, String repeatsUnit, String observations);
 
     @Query("SELECT * FROM treatments ORDER BY next_date, type")
     List<Treatment> getAll();

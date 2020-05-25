@@ -10,13 +10,14 @@ import java.util.concurrent.Callable;
 
 public class DeleteTreatmentWithConfirm {
 
-    public static void deleteTreatment(final Callable<Void> callback, final long id, Context context) {
+    public static void deleteTreatment(final Callable<Void> callback, final long id, final Context context) {
         DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         new TreatmentDaoAsync.DeleteTreatmentAsync(callback).execute(id);
+                        NotificationHelper.cancelNotification(id, context);
                         dialog.dismiss();
                         break;
 

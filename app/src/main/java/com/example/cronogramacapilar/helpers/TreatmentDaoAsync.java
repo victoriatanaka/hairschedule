@@ -98,8 +98,8 @@ public final class TreatmentDaoAsync {
         }
     }
 
-    public static class CreateTreatmentAsync extends AsyncTask<Void, Void, Void> {
-        private final Callable<Void> callback;
+    public static class CreateTreatmentAsync extends AsyncTask<Void, Void, Treatment> {
+        private final Function<Treatment, Void> callback;
         private final String type;
         private final Date lastDate;
         private final Date nextDate;
@@ -108,7 +108,7 @@ public final class TreatmentDaoAsync {
         private final String observations;
 
 
-        public CreateTreatmentAsync(Callable<Void> callback, String type, Date lastDate, Date nextDate, String repeatsUnit, int repeats, String observations) {
+        public CreateTreatmentAsync(Function<Treatment, Void> callback, String type, Date lastDate, Date nextDate, String repeatsUnit, int repeats, String observations) {
             this.callback = callback;
             this.type = type;
             this.lastDate = lastDate;
@@ -119,18 +119,14 @@ public final class TreatmentDaoAsync {
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
-            MainActivity.database.treatmentDao().create(type, setTimeToZero(lastDate), setTimeToZero(nextDate), repeats, repeatsUnit, observations);
-            return null;
+        protected Treatment doInBackground(Void... voids) {
+            long id = MainActivity.database.treatmentDao().create(type, setTimeToZero(lastDate), setTimeToZero(nextDate), repeats, repeatsUnit, observations);
+            return MainActivity.database.treatmentDao().get(id);
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            try {
-                callback.call();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+        protected void onPostExecute(Treatment treatment) {
+            callback.apply(treatment);
         }
     }
 

@@ -70,22 +70,7 @@ public class TreatmentActivity extends AppCompatActivity {
 
     private void setTreatmentTypeIcon(String treatmentType) {
         ImageView typeIcon = findViewById(R.id.icon_type);
-        switch (treatmentType.toLowerCase()) {
-            case "hidratação":
-                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_rain_drops));
-                break;
-            case "reconstrução":
-                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_protein_supplements));
-                break;
-            case "nutrição":
-                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_coconut_oil));
-                break;
-            case "acidificação":
-                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_cider));
-                break;
-            default:
-                typeIcon.setImageDrawable(getResources().getDrawable(R.drawable.ic_herbal_treatment));
-        }
+        typeIcon.setImageDrawable(getResources().getDrawable(Treatment.getTreatmentIcon(treatmentType)));
     }
 
     @Override

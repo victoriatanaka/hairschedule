@@ -36,6 +36,13 @@
     <string name="cancel">Cancelar</string>
     <string name="showcase_create_treatment_title">Crie um tratamento</string>
     <string name="showcase_create_treatment_text">Clique no botão para criar um novo tratamento</string>
+    <string name="title_notification_today">Hoje é dia de %1$s! 🌸</string>
+    <string name="title_notification_today_h">Hoje é dia de %1$s! 💦</string>
+    <string name="title_notification_today_r">Hoje é dia de %1$s! 🥥</string>
+    <string name="title_notification_today_n">Hoje é dia de %1$s! 💪</string>
+    <string name="title_notification_today_a">Hoje é dia de %1$s! 🍎</string>
+    <string name="title_notification_late">⚠️ Você fez %1$s?</string>
+    <string name="channel_id">alarme_tratamento</string>
     <string-array name="treatments_array">
         <item>Tipo de tratamento</item>
         <item>Acidificação</item>

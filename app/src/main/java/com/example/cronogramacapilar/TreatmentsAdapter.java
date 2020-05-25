@@ -21,12 +21,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.arch.core.util.Function;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.cronogramacapilar.activities.EditTreatmentActivity;
 import com.example.cronogramacapilar.activities.MainActivity;
 import com.example.cronogramacapilar.activities.TreatmentActivity;
 import com.example.cronogramacapilar.helpers.DeleteTreatmentWithConfirm;
+import com.example.cronogramacapilar.helpers.NotificationHelper;
 import com.example.cronogramacapilar.helpers.TreatmentDaoAsync;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -49,10 +51,12 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
         final Button seeDetailsButton;
         final Button markAsCompleteButton;
         final ImageButton menuButton;
+        final CardView containerView;
 
         TreatmentViewHolder(final View view) {
             super(view);
             this.typeTextView = view.findViewById(R.id.treatment_type);
+            this.containerView = view.findViewById(R.id.card_view);
             this.lastDateView = view.findViewById(R.id.last_date);
             this.nextDateView = view.findViewById(R.id.next_date);
             this.daysUntilView = view.findViewById(R.id.days_until);
@@ -82,6 +86,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
     @Override
     public void onBindViewHolder(final TreatmentViewHolder holder, final int position) {
         final Treatment current = treatments.get(position);
+        holder.containerView.setTag(current);
 
         // setup type 
         holder.typeTextView.setText(current.type);
@@ -124,30 +129,35 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     private void setupDaysUntil(TreatmentViewHolder holder, long daysUntil) {
-        if (daysUntil >= 1)
+        if (daysUntil >= 1) {
             holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.in_n_days, (int) daysUntil, daysUntil));
+            holder.daysUntilView.setTypeface(null, Typeface.NORMAL);
+            holder.daysUntilView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
+        }
         else if (daysUntil == 0) {
             holder.daysUntilView.setText(R.string.today);
-            holder.daysUntilView.setTypeface(holder.daysUntilView.getTypeface(), Typeface.BOLD_ITALIC);
+            holder.daysUntilView.setTypeface(null, Typeface.BOLD_ITALIC);
+            holder.daysUntilView.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, null, null);
         } else {
+            holder.daysUntilView.setTypeface(null, Typeface.NORMAL);
             holder.daysUntilView.setText(context.getResources().getQuantityString(R.plurals.n_days_late, (int) -daysUntil, -daysUntil));
             Drawable drawable = context.getResources().getDrawable(R.drawable.ic_warning_black_24dp);
             holder.daysUntilView.setCompoundDrawablesRelativeWithIntrinsicBounds(drawable, null, null, null);
         }
     }
 
-    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, long daysUnitl, final int position) {
+    private void setupMarkAsCompleteButton(TreatmentViewHolder holder, long daysSince, long daysUntil, final int position) {
         if (daysSince == 0)
             holder.markAsCompleteButton.setVisibility(View.GONE);
         else {
             holder.markAsCompleteButton.setVisibility(View.VISIBLE);
 
-            if (daysUnitl <= 0)
+            if (daysUntil <= 0)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     holder.markAsCompleteButton.setTextAppearance(R.style.TextAppearance_AppCompat_Widget_Button_Colored);
-                    Drawable drawable = context.getResources().getDrawable(R.drawable.ic_check_white_24dp);
+                    Drawable drawable = context.getDrawable(R.drawable.ic_check_white_24dp);
                     holder.markAsCompleteButton.setCompoundDrawablesRelativeWithIntrinsicBounds(null, null, drawable, null);
-                    holder.markAsCompleteButton.setBackgroundTintList(ColorStateList.valueOf(context.getResources().getColor(R.color.colorAccent)));
+                    holder.markAsCompleteButton.setBackgroundTintList(ColorStateList.valueOf(context.getColor(R.color.colorAccent)));
                 }
 
 
@@ -168,6 +178,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                             new Callable<Void>() {
                                 public Void call() {
                                     reload();
+                                    NotificationHelper.createNotification(current, context);
                                     createSnackbar(finalPrevious);
                                     return null;
                                 }
@@ -187,6 +198,7 @@ public class TreatmentsAdapter extends RecyclerView.Adapter<TreatmentsAdapter.Tr
                         new Callable<Void>() {
                             public Void call() {
                                 reload();
+                                NotificationHelper.createNotification(previous, context);
                                 return null;
                             }
                         }, previous).execute();

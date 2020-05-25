@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 
 import com.example.cronogramacapilar.R;
 import com.example.cronogramacapilar.Treatment;
@@ -300,7 +301,7 @@ public final class TreatmentFormHelper {
     }
 
     public void saveTreatment(Spinner treatmentField, EditText numberOfRepeatsField, Spinner unitOfRepeatsField, EditText lastDateField, String observations, long id) {
-        Treatment treatment = constructTreatment(treatmentField, numberOfRepeatsField, unitOfRepeatsField, lastDateField);
+        final Treatment treatment = constructTreatment(treatmentField, numberOfRepeatsField, unitOfRepeatsField, lastDateField);
         if (treatment != null) {
             treatment.observations = observations;
             treatment.id = id;
@@ -308,6 +309,7 @@ public final class TreatmentFormHelper {
                     new Callable<Void>() {
                         public Void call() {
                             ((Activity) context).finish();
+                            NotificationHelper.createNotification(treatment, context);
                             return null;
                         }
                     }, treatment).execute();
@@ -318,9 +320,11 @@ public final class TreatmentFormHelper {
         Treatment treatment = constructTreatment(treatmentField, numberOfRepeatsField, unitOfRepeatsField, lastDateField);
         if (treatment != null) {
             new TreatmentDaoAsync.CreateTreatmentAsync(
-                    new Callable<Void>() {
-                        public Void call() {
+                    new Function<Treatment, Void>() {
+                        @Override
+                        public Void apply(Treatment treatmentCreated) {
                             ((Activity) context).finish();
+                            NotificationHelper.createNotification(treatmentCreated, context);
                             return null;
                         }
                     }, treatment.type, treatment.lastDate, treatment.nextDate, treatment.repeatsUnit, treatment.repeats, observations).execute();
