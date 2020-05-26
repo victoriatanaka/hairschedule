@@ -135,9 +135,11 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = "Alarmes";
             String description = "Canal para lembretes de tratamentos";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            int importance = NotificationManager.IMPORTANCE_HIGH;
             NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
             channel.setDescription(description);
+            channel.setVibrationPattern(new long[]{200, 250, 200, 250});
+            channel.enableVibration(true);
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);

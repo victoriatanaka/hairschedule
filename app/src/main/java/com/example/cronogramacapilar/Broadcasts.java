@@ -45,7 +45,7 @@ public class Broadcasts {
                     .setContentTitle(title)
                     .setContentText(text)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(createMainPendingIntent(context));
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -77,7 +77,7 @@ public class Broadcasts {
                     .setContentTitle(title)
                     .setContentText(text)
                     .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                    .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setContentIntent(createMainPendingIntent(context));
 
             NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
